@@ -1,8 +1,9 @@
-const Cesium = require('cesium/Cesium');
+const Cesium = require( 'cesium/Cesium' );
+//const observationsController = require( '../controller/observations' );
 
 var Pickers_3DTile_Activated = true;
 
-export async function active3DTilePicker( viewer ) {
+export async function active3DTilePicker( viewer, startDate, endDate ) {
 
     var highlighted = {
 
@@ -86,10 +87,14 @@ export async function active3DTilePicker( viewer ) {
             }
 
         const llcoordinates = toDegrees( viewer.scene.pickPosition( movement.position ) );  
-        const latitude = llcoordinates[ 0 ];
-        const longitude = llcoordinates[ 1 ];
+        const gmlid = picked3DtileFeature.getProperty( 'gml_id' );
+        const RATU = picked3DtileFeature.getProperty( 'RATU' );
+        const latitude = picked3DtileFeature.getProperty( 'latitude' );
+        const longitude = picked3DtileFeature.getProperty( 'longitude' );
 
-        getObservations( 'http://localhost:3000/observations/' ).then( observations => generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) );
+        findObservations( 'http://localhost:3000/observations/', startDate, endDate, gmlid, RATU, latitude, longitude ).then( 
+            observations => generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) 
+        );
 
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -104,22 +109,33 @@ function toDegrees( cartesian3Pos ) {
   }
 
   /* Function that gets observations from backend */
-async function getObservations ( url ) {
+async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
 
-    let response = await fetch( url );
-//    let response = await fetch( url + new URLSearchParams({
-//        latitude: lat,
-//        longitude: long,
-//    }));
+    const response = await fetch( url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify( 
+            { 
+                start: startDate, 
+                end: endDate,
+                gml: gmlid,
+                ratu: ratu,
+                lat: latitude,
+                long: longitude
+            } )
+      } );
 
-    if ( !response.ok)  {
+    if ( !response.ok )  {
 
         let message = `An error has occured: ${ response.status }`;
         throw new Error( message );
 
     }
 
-    let data = await response.json();
+    const data = await response.json();
     return data;
 
 }
@@ -196,12 +212,12 @@ function findObservationsForUnit( selectedEntity, observations, unit ) {
         let average = observations['observations'][ unit ].timevaluepairs[ i ].averagevalue;
         let timeString = String( time );
 
-        if ( total != null ) {
+        if ( total != null && total > 0) {
 
             selectedEntity.description += '<tr><th> Total A measured at ' + timeString + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
 
         }
-        if ( average != null ) {
+        if ( average != null && average > 0 ) {
 
             selectedEntity.description += '<tr><th> Average A measured at ' + timeString + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
 

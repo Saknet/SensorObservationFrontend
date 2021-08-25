@@ -5,3 +5,11 @@ html, body, #cesiumContainer {
 	padding: 0;
 	overflow: hidden;
 }
+
+.simplePicker {
+	display: flex;
+  }
+
+.simplePicker-child {
+	flex: 1;
+}
