@@ -1,18 +1,19 @@
 const Cesium = require( 'cesium/Cesium' );
+const datetimepicker = require( './services/datetimepicker' );
 //const observationsController = require( '../controller/observations' );
 
 var Pickers_3DTile_Activated = true;
 
-export async function active3DTilePicker( viewer, startDate, endDate ) {
+export function active3DTilePicker( viewer, startTime, endTime ) {
 
-    var highlighted = {
+    let highlighted = {
 
         feature: undefined,
         originalColor: new Cesium.Color()
 
     };
     // Information about the currently selected feature
-    var selected = {
+    let selected = {
 
         feature: undefined,
         originalColor: new Cesium.Color()
@@ -20,7 +21,7 @@ export async function active3DTilePicker( viewer, startDate, endDate ) {
     };
 
     // Get default left click handler for when a feature is not picked on left click
-    var clickHandler = viewer.screenSpaceEventHandler.getInputAction( Cesium.ScreenSpaceEventType.LEFT_CLICK );
+    let clickHandler = viewer.screenSpaceEventHandler.getInputAction( Cesium.ScreenSpaceEventType.LEFT_CLICK );
     // Color a feature green on hover.
     viewer.screenSpaceEventHandler.setInputAction( function onMouseMove( movement ) {
 
@@ -40,7 +41,7 @@ export async function active3DTilePicker( viewer, startDate, endDate ) {
             // nameOverlay.style.display = 'block';
             // nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
             // nameOverlay.style.left = movement.endPosition.x + 'px';
-            var name = picked3DtileFeature.getProperty( 'CODE' );
+            let name = picked3DtileFeature.getProperty( 'CODE' );
             if ( !Cesium.defined( name )) {
                 name = picked3DtileFeature.getProperty( 'ID' );
             }
@@ -86,15 +87,15 @@ export async function active3DTilePicker( viewer, startDate, endDate ) {
 
             }
 
-        const llcoordinates = toDegrees( viewer.scene.pickPosition( movement.position ) );  
-        const gmlid = picked3DtileFeature.getProperty( 'gml_id' );
-        const RATU = picked3DtileFeature.getProperty( 'RATU' );
-        const latitude = picked3DtileFeature.getProperty( 'latitude' );
-        const longitude = picked3DtileFeature.getProperty( 'longitude' );
+            console.log( "picked", picked3DtileFeature );
+            const gmlid = picked3DtileFeature.getProperty( 'id' );
+            const RATU = picked3DtileFeature.getProperty( 'RATU' );
+            const latitude = picked3DtileFeature.getProperty( 'latitude' );
+            const longitude = picked3DtileFeature.getProperty( 'longitude' );
 
-        findObservations( 'http://localhost:3000/observations/', startDate, endDate, gmlid, RATU, latitude, longitude ).then( 
-            observations => generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) 
-        );
+            findObservations( 'http://localhost:3000/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
+                observations => generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) 
+            );
 
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -144,7 +145,7 @@ async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude
 function generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) {
 
     let selectedEntity = new Cesium.Entity();
-    let gml_id = picked3DtileFeature.getProperty( 'gml_id' );
+    let gml_id = picked3DtileFeature.getProperty( 'id' );
     let highestRoof =  picked3DtileFeature.getProperty( 'HighestRoof' );
     let kerroksia =  picked3DtileFeature.getProperty( 'Kerroksia' );
     let kerrosala =  picked3DtileFeature.getProperty( 'Kerrosala' );
@@ -154,7 +155,7 @@ function generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) {
     selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
     viewer.selectedEntity = selectedEntity;
     selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' 
-        + '<tr><th>ID</th><td>' + picked3DtileFeature.getProperty( 'ID' ) + '</td></tr>';
+        + '<tr><th>ID</th><td>' + picked3DtileFeature.getProperty( 'id' ) + '</td></tr>';
 
     selectedEntity.description += '<tr><th>HighestRoof</th><td>' + highestRoof + '</td></tr>';
                 
