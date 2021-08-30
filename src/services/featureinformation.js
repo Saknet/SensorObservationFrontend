@@ -75,13 +75,13 @@ function findObservationsForUnit( selectedEntity, observations, unit ) {
 
         if ( total != null && total > 0) {
 
-            selectedEntity.description += '<tr><th> Total A measured at ' + timeString + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
+            selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + timeString + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
 
         }
-        
+
         if ( average != null && average > 0 ) {
 
-            selectedEntity.description += '<tr><th> Average A measured at ' + timeString + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
+            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + timeString + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
 
         }         
     }
