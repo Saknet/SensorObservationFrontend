@@ -64,6 +64,7 @@ export function generateFeatureInfoTable( viewer, picked3DtileFeature, observati
 
 /* Function that processes found observation data for faster timeseries generation  */
 function findObservationsForUnit( selectedEntity, observations, unit ) {
+
     for ( let i = 0; i < observations[ 'observations' ][ unit ].timevaluepairs.length; i++ ) {
 
         let time = new Date()
@@ -77,6 +78,7 @@ function findObservationsForUnit( selectedEntity, observations, unit ) {
             selectedEntity.description += '<tr><th> Total A measured at ' + timeString + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
 
         }
+        
         if ( average != null && average > 0 ) {
 
             selectedEntity.description += '<tr><th> Average A measured at ' + timeString + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';

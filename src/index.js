@@ -22,7 +22,7 @@ window.onload = function() {
     let hoursselect = document.getElementById('hours-list');
 
     hoursselect.onchange = function() {
-        
+
         let clockGD = Cesium.JulianDate.toGregorianDate( viewer.clock.currentTime );
         let hours = hoursselect.value;
         let newEndDate = new Date( clockGD.year, clockGD.month - 1, clockGD.day, clockGD.hour + 3, clockGD.minute, clockGD.second, clockGD.millisecond );
@@ -35,7 +35,7 @@ window.onload = function() {
         } else {
         
             startDate = new Date( Date.now() - 3600000 * hours  ).toISOString();
-            endDate = new Date(Date.now()).toISOString();
+            endDate = new Date( Date.now() ).toISOString();
     
         }
         
