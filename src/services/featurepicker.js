@@ -3,8 +3,19 @@ const observationsController = require( '../controllers/observations' );
 const featureInformationService = require( '../services/featureinformation' );
 
 var Pickers_3DTile_Activated = true;
+var startTime = new Date( Date.now() - 14400000 );
+var endTime = new Date( Date.now() );
 
-export function active3DTilePicker( viewer, startTime, endTime ) {
+/* Function that updates times needed for retrieving observations data */
+export function updateTimesForObservations( start, end ) {
+
+    startTime = start;
+    endTime = end;
+
+}
+
+/* Function that activates feature picker */
+export function active3DTilePicker( viewer ) {
 
     let highlighted = {
 

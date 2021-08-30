@@ -1,7 +1,8 @@
   /* Function that gets observations from backend */
   export async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
-
+  
     const response = await fetch( url, {
+      
         method: 'POST',
         headers: {
           'Accept': 'application/json',

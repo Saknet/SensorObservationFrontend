@@ -71,17 +71,16 @@ function findObservationsForUnit( selectedEntity, observations, unit ) {
         time.setTime( observations['observations'][ unit ].timevaluepairs[ i ].time * 1000 );
         let total = observations['observations'][ unit ].timevaluepairs[ i ].totalvalue;
         let average = observations['observations'][ unit ].timevaluepairs[ i ].averagevalue;
-        let timeString = String( time );
 
-        if ( total != null && total > 0) {
+        if ( total != null ) {
 
-            selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + timeString + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
+        selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
 
-        }
+        }  
 
-        if ( average != null && average > 0 ) {
+        if ( average != null ) {
 
-            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + timeString + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
+            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
 
         }         
     }

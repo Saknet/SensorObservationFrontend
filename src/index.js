@@ -40,17 +40,17 @@ function confirmTimes() {
 
     if ( new Date( endDate ).getTime() >= new Date( newEndDate ).getTime() ) {
         
-        endDate = newEndDate.toISOString();
-        startDate = new Date( newEndDate - 3600000 * hours ).toISOString();
+        endDate = newEndDate;
+        startDate = new Date( newEndDate - 3600000 * hours );
 
     } else {
     
-        startDate = new Date( Date.now() - 3600000 * hours  ).toISOString();
-        endDate = new Date( Date.now() ).toISOString();
+        startDate = new Date( Date.now() - 3600000 * hours  );
+        endDate = new Date( Date.now() );
         alert("Selected time can't be in the future");
 
     } 
 
-    Cesium.when( tileset.readyPromise ).then( function ( tileset ) { viewer.flyTo( tileset ) } ).then( featurePickerService.active3DTilePicker( viewer, startDate, endDate ) );
+    featurePickerService.updateTimesForObservations( startDate, endDate );
 
 }
