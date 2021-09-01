@@ -1,5 +1,10 @@
   /* Function that gets observations from backend */
-  export async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
+  export async function findObservations ( url, startDate, picked3DtileFeature ) {
+
+    const gmlId = picked3DtileFeature.getProperty( 'id' );
+    const RATU = picked3DtileFeature.getProperty( 'RATU' );
+    const latitude = picked3DtileFeature.getProperty( 'latitude' );
+    const longitude = picked3DtileFeature.getProperty( 'longitude' );
   
     const response = await fetch( url, {
       
@@ -12,8 +17,8 @@
             { 
                 start: startDate, 
                 end: endDate,
-                gmlid: gmlid,
-                ratu: ratu,
+                gmlid: gmlId,
+                ratu: RATU,
                 lat: latitude,
                 long: longitude
             } )
