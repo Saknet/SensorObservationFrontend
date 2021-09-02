@@ -10,7 +10,26 @@ var hours = 4;
 
 confirmTimesButton.addEventListener("click", confirmTimes);
 
-var viewer = new Cesium.Viewer( 'cesiumContainer' );
+Cesium.Ion.defaultAccessToken = null;
+
+var viewer = new Cesium.Viewer("cesiumContainer", {
+	animation: true,
+    fullscreenButton: false,
+    geocoder: false,
+    shadows: true,
+    navigationHelpButton: false,
+    timeline: true,
+    sceneModePicker: false,
+    baseLayerPicker: false,
+    homeButton: false,
+	imageryProvider: new Cesium.WebMapServiceImageryProvider({
+    	url : 'https://kartta.hel.fi/ws/geoserver/avoindata/ows?SERVICE=WMS&',
+    	layers : 'avoindata:Opaskartta_Helsinki_harmaa',
+    	proxy: new Cesium.DefaultProxy('/proxy/')
+	}),
+	terrainProvider : new Cesium.EllipsoidTerrainProvider()
+});
+
 var tileset = viewer.scene.primitives.add( new Cesium.Cesium3DTileset( {
     url: 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json',
     show: true,
