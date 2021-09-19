@@ -5,10 +5,11 @@ export function generateFeatureInfoTable( viewer, picked3DtileFeature, observati
 
     let selectedEntity = new Cesium.Entity();
     let gml_id = picked3DtileFeature.getProperty( 'id' );
-    let highestRoof =  picked3DtileFeature.getProperty( 'HighestRoof' );
-    let kerroksia =  picked3DtileFeature.getProperty( 'Kerroksia' );
-    let kerrosala =  picked3DtileFeature.getProperty( 'Kerrosala' );
-    let valmistunut =  picked3DtileFeature.getProperty( 'Valmistunut' );
+    let highestRoof =  picked3DtileFeature.getProperty( 'highestroof' );
+    let kerroksia =  picked3DtileFeature.getProperty( 'kerroksia' );
+    let kerrosala =  picked3DtileFeature.getProperty( 'kerrosala' );
+    let valmistunut =  picked3DtileFeature.getProperty( 'valmistunut' );
+    let ratu =  picked3DtileFeature.getProperty( 'ratu' );
 
     selectedEntity.name = "GML_ID: " + gml_id + "";
     selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
@@ -37,6 +38,12 @@ export function generateFeatureInfoTable( viewer, picked3DtileFeature, observati
 
     }
 
+    if ( ratu != null ) {
+
+        selectedEntity.description += '<tr><th>RATU</th><td>' + ratu + '</td></tr>';
+
+    }
+
     if ( observations[ 'observations' ][ 'w' ]  != null ) {
 
         selectedEntity = findObservationsForUnit( selectedEntity, observations, 'w' );
@@ -59,7 +66,17 @@ export function generateFeatureInfoTable( viewer, picked3DtileFeature, observati
 
         selectedEntity = findObservationsForUnit( selectedEntity, observations, 'a' );
 
-    }     
+    }    
+
+    if ( observations[ 'observations' ][ 'decibel' ]  != null ) {
+        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'decibel' );
+
+    } 
+
+    if ( observations[ 'observations' ][ 'degreeCelsius' ]  != null ) {
+        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'degreeCelsius' );
+
+    } 
 }
 
 /* Function that processes found observation data for faster timeseries generation  */
@@ -74,13 +91,13 @@ function findObservationsForUnit( selectedEntity, observations, unit ) {
 
         if ( total != null ) {
 
-        selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + total.toFixed( 2 )+ '</td></tr>';
+        selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + total.toFixed( 2 ) + '</td></tr>';
 
         }  
 
         if ( average != null ) {
 
-            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + average.toFixed( 2 )+ '</td></tr>';
+            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + average.toFixed( 2 ) + '</td></tr>';
 
         }         
     }
