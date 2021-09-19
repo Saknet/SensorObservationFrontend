@@ -103,7 +103,7 @@ export function active3DTilePicker( viewer ) {
             const latitude = picked3DtileFeature.getProperty( 'latitude' );
             const longitude = picked3DtileFeature.getProperty( 'longitude' );
 
-            observationsController.findObservations( 'http://localhost:3000/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
+            observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
                 observations => featureInformationService.generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) 
             );
 
