@@ -1,0 +1,106 @@
+const Plotly = require( 'plotly.js/dist/plotly' )
+
+export function generateObservationChart( observationData ) {
+
+    let plotlyData = [];
+
+    if ( observationData[ 'w' ] != null ) {
+
+        const wTrace = {
+
+            x: observationData[ 'w' ].observationtimes,
+            y: observationData[ 'w' ].averages,
+            type: 'scatter',
+            name: 'watts'
+
+        }; 
+
+        plotlyData.push( wTrace );        
+
+    }
+
+    if ( observationData[ 'j' ] != null ) {
+
+        const jTrace = {
+            x: observationData[ 'j' ].observationtimes,
+            y: observationData[ 'j' ].averages,
+            type: 'scatter',
+            name: 'joules'
+        }; 
+
+        plotlyData.push( jTrace );        
+
+    }
+
+    if ( observationData[ 'v' ] != null ) {
+
+        const vTrace = {
+
+            x: observationData[ 'v' ].observationtimes,
+            y: observationData[ 'v' ].averages,
+            type: 'scatter',
+            name: 'volts'
+
+        };
+
+        plotlyData.push( vTrace ); 
+
+    }
+
+    if ( observationData[ 'a' ] != null ) {
+
+        const aTrace = {
+
+            x: observationData[ 'a' ].observationtimes,
+            y: observationData[ 'a' ].averages,
+            type: 'scatter',
+            name: 'ampères'
+
+        };
+
+        plotlyData.push( aTrace ); 
+
+    }    
+
+    if ( observationData[ 'decibel' ] != null ) {
+
+        const decibelTrace = {
+
+            x: observationData[ 'decibel' ].observationtimes,
+            y: observationData[ 'decibel' ].averages,
+            type: 'scatter',
+            name: 'decibels'
+
+        };
+
+        plotlyData.push( decibelTrace );        
+
+    } 
+
+    if ( observationData[ 'degreeCelsius' ] != null ) {
+
+        const degreeCelsiusTrace = {
+
+            x: observationData[ 'degreeCelsius' ].observationtimes,
+            y: observationData[ 'degreeCelsius' ].averages,
+            type: 'scatter',
+            name: '°C'
+
+        };
+
+        plotlyData.push( degreeCelsiusTrace );  
+
+    } 
+
+    const layout = {
+
+        title: "Sensor Observation Data",
+        font: {
+          size: 10
+        }
+    }
+
+
+    Plotly.newPlot( 'obsChart', plotlyData, layout, { responsive: true } );
+
+} 

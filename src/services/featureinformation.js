@@ -1,7 +1,8 @@
 const Cesium = require( 'cesium/Cesium' );
+const chartsService = require( '../services/charts' );
 
 /* Function that generates feature information table  */
-export function generateFeatureInfoTable( viewer, picked3DtileFeature, observations ) {
+export function generateFeatureInfoTable( viewer, picked3DtileFeature, observationData ) {
 
     let selectedEntity = new Cesium.Entity();
     let gml_id = picked3DtileFeature.getProperty( 'id' );
@@ -44,50 +45,19 @@ export function generateFeatureInfoTable( viewer, picked3DtileFeature, observati
 
     }
 
-    if ( observations[ 'observations' ][ 'w' ]  != null ) {
+    chartsService.generateObservationChart( observationData );
 
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'w' );
-
-    }
-
-    if ( observations[ 'observations' ][ 'j' ]  != null ) {
-
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'j' );
-
-    }
-
-    if ( observations[ 'observations' ][ 'v' ]  != null ) {
-
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'v' );
-
-    }
-
-    if ( observations[ 'observations' ][ 'a' ]  != null ) {
-
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'a' );
-
-    }    
-
-    if ( observations[ 'observations' ][ 'decibel' ]  != null ) {
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'decibel' );
-
-    } 
-
-    if ( observations[ 'observations' ][ 'degreeCelsius' ]  != null ) {
-        selectedEntity = findObservationsForUnit( selectedEntity, observations, 'degreeCelsius' );
-
-    } 
 }
 
 /* Function that processes found observation data for faster timeseries generation  */
-function findObservationsForUnit( selectedEntity, observations, unit ) {
+function findObservationsForUnit( selectedEntity, observationDataForUnit, unit ) {
 
-    for ( let i = 0; i < observations[ 'observations' ][ unit ].timevaluepairs.length; i++ ) {
+    for ( let i = 0; i < observationDataForUnit.timevaluepairs.length; i++ ) {
 
         let time = new Date()
-        time.setTime( observations['observations'][ unit ].timevaluepairs[ i ].time * 1000 );
-        let total = observations['observations'][ unit ].timevaluepairs[ i ].totalvalue;
-        let average = observations['observations'][ unit ].timevaluepairs[ i ].averagevalue;
+        time.setTime( observationDataForUnit.timevaluepairs[ i ].time * 1000 );
+        let total = observationDataForUnit.timevaluepairs[ i ].totalvalue;
+        let average = observationDataForUnit.timevaluepairs[ i ].averagevalue;
 
         if ( total != null ) {
 

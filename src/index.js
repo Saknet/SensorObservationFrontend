@@ -70,6 +70,6 @@ function confirmTimes() {
 
     } 
 
-    featurePickerService.updateTimesForObservations( startDate, endDate );
+    featurePickerService.updateTimesForObservations( viewer, startDate, endDate );
 
 }
