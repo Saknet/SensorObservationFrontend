@@ -92,6 +92,21 @@ export function generateObservationChart( observationData ) {
 
     } 
 
+    if ( observationData[ 'pm' ] != null ) {
+
+        const pmTrace = {
+
+            x: observationData[ 'pm' ].observationtimes,
+            y: observationData[ 'pm' ].averages,
+            type: 'scatter',
+            name: 'pm in air'
+
+        };
+
+        plotlyData.push( pmTrace );  
+
+    } 
+
     const layout = {
 
         title: "Sensor Observation Data",
@@ -100,7 +115,34 @@ export function generateObservationChart( observationData ) {
         }
     }
 
-
     Plotly.newPlot( 'obsChart', plotlyData, layout, { responsive: true } );
 
-} 
+}
+
+export function generateFeatureDataTable( featureData ) {
+
+    const values = [
+        featureData[ 0 ],
+        featureData[ 1 ] 
+    ]
+  
+    const data = [ {
+        type: 'table',
+        header: {
+            values: [["<b>Attribute</b>"], ["<b>Value</b>"]],
+            align: "center",
+            line: {width: 1, color: '#506784'},
+            fill: {color: '#119DFF'},
+            font: {family: "Arial", size: 10, color: "white"}
+        },
+        cells: {
+            values: values,
+            align: ["left", "center"],
+            line: {color: "#506784", width: 1},
+             fill: {color: ['#25FEFD', 'white']},
+            font: {family: "Arial", size: 9, color: ["#506784"]}
+        }
+    }]
+
+    Plotly.newPlot( 'featureInfo', data );
+}

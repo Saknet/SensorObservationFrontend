@@ -4,9 +4,9 @@ require( 'cesium/Widgets/widgets.css' );
 const Cesium = require('cesium/Cesium');
 const featurePickerService = require( './services/featurepicker' );
 const confirmTimesButton = document.getElementById( "confirm-times" );
-var startDate = new Date( Date.now() - 14400000 );
+var startDate = new Date( Date.now() - 28800000 );
 var endDate = new Date( Date.now() );
-var hours = 4;
+var hours = 8;
 
 confirmTimesButton.addEventListener("click", confirmTimes);
 

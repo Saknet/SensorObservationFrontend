@@ -1,54 +1,39 @@
-const Cesium = require( 'cesium/Cesium' );
 const chartsService = require( '../services/charts' );
 
 /* Function that generates feature information table  */
-export function generateFeatureInfoTable( viewer, picked3DtileFeature, observationData ) {
+export function generateFeatureInfoTable( featureData, observationData ) {
 
-    let selectedEntity = new Cesium.Entity();
-    let gml_id = picked3DtileFeature.getProperty( 'id' );
-    let highestRoof =  picked3DtileFeature.getProperty( 'highestroof' );
-    let kerroksia =  picked3DtileFeature.getProperty( 'kerroksia' );
-    let kerrosala =  picked3DtileFeature.getProperty( 'kerrosala' );
-    let valmistunut =  picked3DtileFeature.getProperty( 'valmistunut' );
-    let ratu =  picked3DtileFeature.getProperty( 'ratu' );
+    console.log( "featureData", featureData );
 
-    selectedEntity.name = "GML_ID: " + gml_id + "";
-    selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
-    viewer.selectedEntity = selectedEntity;
-    selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' 
-        + '<tr><th>ID</th><td>' + picked3DtileFeature.getProperty( 'id' ) + '</td></tr>';
+    const filteredFeatureData = filterFeatureData( featureData );
+    chartsService.generateFeatureDataTable( filteredFeatureData );
 
-    selectedEntity.description += '<tr><th>HighestRoof</th><td>' + highestRoof + '</td></tr>';
-                
+    if ( !Array.isArray( observationData ) ) {
 
-    if ( kerroksia != null ) {
+        chartsService.generateObservationChart( observationData );
 
-        selectedEntity.description += '<tr><th>Kerroksia</th><td>' + kerroksia + '</td></tr>';
-
-    } 
-
-    if ( kerrosala != null ) {
-
-        selectedEntity.description += '<tr><th>Kerrosala</th><td>' + kerrosala + '</td></tr>';
-
-    }  
-            
-    if ( valmistunut != null ) {
-
-        selectedEntity.description += '<tr><th>Valmistunut</th><td>' + valmistunut + '</td></tr>';
-
-    }
-
-    if ( ratu != null ) {
-
-        selectedEntity.description += '<tr><th>RATU</th><td>' + ratu + '</td></tr>';
-
-    }
-
-    chartsService.generateObservationChart( observationData );
-
+    }   
+    
 }
 
+function filterFeatureData( featureData ) {
+    const keys = Object.keys( featureData.getProperty( 'attributes' ) );   
+    const values = Object.values( featureData.getProperty( 'attributes' ) ); 
+    let keysToKeep = [];
+    let valuesToKeep = [];
+
+    for ( let i = 0; i < keys.length; i++ ) {
+
+        if ( values[ i ] != null && !keys[ i ].startsWith( 'Address' ) && keys[ i ] != 'integrating_person' && keys[ i ] != 'integration_date' && keys[ i ] != 'matching_mode' 
+            && keys[ i ] != 'externalReference externalObjectName' && keys[ i ] != 'overlap_filter' && keys[ i ] != 'overlap_file_to_DB' && keys[ i ] != 'overlap_DB_to_file' 
+            && keys[ i ] != 'area_diff_filter' && keys[ i ] != 'area_diff' && keys[ i ] != 'UUID' ) {
+                keysToKeep.push( keys[ i ] );
+                valuesToKeep.push( values[ i ] );
+        }
+    }
+
+    return [ keysToKeep, valuesToKeep ]
+}
 /* Function that processes found observation data for faster timeseries generation  */
 function findObservationsForUnit( selectedEntity, observationDataForUnit, unit ) {
 

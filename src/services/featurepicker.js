@@ -4,27 +4,25 @@ const featureInformationService = require( '../services/featureinformation' );
 const Plotly = require( 'plotly.js/dist/plotly' )
 
 var Pickers_3DTile_Activated = true;
-var startTime = new Date( Date.now() - 14400000 );
+var startTime = new Date( Date.now() - 28800000 );
 var endTime = new Date( Date.now() );
 var feature = null;
 
 /* Function that updates times needed for retrieving observations data */
-export function updateTimesForObservations( viewer, start, end ) {
+export function updateTimesForObservations( start, end ) {
 
     startTime = start;
     endTime = end;
 
     if ( feature != null ) {
 
-        fetchObservationData( viewer, feature );
-        
+        fetchObservationData();
+
     }
 }
 
 /* Function that activates feature picker */
 export function active3DTilePicker( viewer ) {
-
-    feature = null;
 
     let highlighted = {
 
@@ -52,8 +50,8 @@ export function active3DTilePicker( viewer ) {
                 highlighted.feature = undefined;
             }
             // Pick a new feature
-            var picked3DtileFeature = viewer.scene.pick( movement.endPosition );
-            if ( !Cesium.defined( picked3DtileFeature ) ) {
+            feature = viewer.scene.pick( movement.endPosition );
+            if ( !Cesium.defined( feature ) ) {
                 // nameOverlay.style.display = 'none';
                 return;
             }
@@ -61,17 +59,17 @@ export function active3DTilePicker( viewer ) {
             // nameOverlay.style.display = 'block';
             // nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
             // nameOverlay.style.left = movement.endPosition.x + 'px';
-            let name = picked3DtileFeature.getProperty( 'CODE' );
+            let name = feature.getProperty( 'CODE' );
             if ( !Cesium.defined( name )) {
-                name = picked3DtileFeature.getProperty( 'ID' );
+                name = feature.getProperty( 'ID' );
             }
             // nameOverlay.textContent = name;
             // Highlight the feature if it's not already selected.
-            if ( picked3DtileFeature !== selected.feature ) {
+            if ( feature !== selected.feature ) {
 
-                highlighted.feature = picked3DtileFeature;
-                Cesium.Color.clone( picked3DtileFeature.color, highlighted.originalColor );
-                picked3DtileFeature.color = Cesium.Color.GREEN;
+                highlighted.feature = feature;
+                Cesium.Color.clone( feature.color, highlighted.originalColor );
+                feature.color = Cesium.Color.GREEN;
             }
         }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE );
@@ -80,7 +78,7 @@ export function active3DTilePicker( viewer ) {
     viewer.screenSpaceEventHandler.setInputAction(function onLeftClick( movement ) {
 
         // Clear chart
-        Plotly.purge( 'obsChart' );
+        deleteObservationChart();
 
         if ( Pickers_3DTile_Activated ) {
             // If a feature was previously selected, undo the highlight
@@ -89,31 +87,29 @@ export function active3DTilePicker( viewer ) {
                 selected.feature = undefined;
             }
             // Pick a new feature
-            var picked3DtileFeature = viewer.scene.pick( movement.position );
-            if ( !Cesium.defined( picked3DtileFeature ) ) {
+            feature = viewer.scene.pick( movement.position );
+            if ( !Cesium.defined( feature ) ) {
                 clickHandler( movement );
                 return;
             }
             // Select the feature if it's not already selected
-            if ( selected.feature === picked3DtileFeature ) {
+            if ( selected.feature === feature ) {
                 return;
             }
-            selected.feature = picked3DtileFeature;
+            selected.feature = feature;
             // Save the selected feature's original color
-            if (picked3DtileFeature === highlighted.feature) {
+            if (feature === highlighted.feature) {
 
                 Cesium.Color.clone( highlighted.originalColor, selected.originalColor );
                 highlighted.feature = undefined;
 
             } else {
 
-                Cesium.Color.clone( picked3DtileFeature.color, selected.originalColor );
+                Cesium.Color.clone( feature.color, selected.originalColor );
 
             }
 
-            feature = picked3DtileFeature;
-
-            fetchObservationData( viewer, picked3DtileFeature );
+            fetchObservationData( viewer );
 
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -121,20 +117,29 @@ export function active3DTilePicker( viewer ) {
     viewer.screenSpaceEventHandler.setInputAction(function onRightClick( ) {
 
         // Clear chart
-        Plotly.purge( 'obsChart' );
+        deleteObservationChart();
 
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK); 
     
 }
 
-function fetchObservationData( viewer, picked3DtileFeature ) {
+function fetchObservationData() {
 
-    const gmlid = picked3DtileFeature.getProperty( 'id' );
-    const RATU = picked3DtileFeature.getProperty( 'RATU' );
-    const latitude = picked3DtileFeature.getProperty( 'latitude' );
-    const longitude = picked3DtileFeature.getProperty( 'longitude' );
+    const gmlid = feature.getProperty( 'id' );
+    const RATU = feature.getProperty( 'RATU' );
+    const latitude = feature.getProperty( 'latitude' );
+    const longitude = feature.getProperty( 'longitude' );
 
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
-        observationData => featureInformationService.generateFeatureInfoTable( viewer, picked3DtileFeature, observationData[ 'observations' ] ) 
+        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ] ) 
     );
+}
+
+/* Function that clears observation chart and  */
+function deleteObservationChart() {
+
+    Plotly.purge( 'obsChart' );
+    Plotly.purge( 'featureInfo' );
+    feature = null;
+
 }
