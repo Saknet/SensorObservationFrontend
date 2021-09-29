@@ -66,10 +66,10 @@ function confirmTimes() {
     
         startDate = new Date( Date.now() - 3600000 * hours  );
         endDate = new Date( Date.now() );
-        alert("Selected time can't be in the future");
+        alert( "Selected time can't be in the future" );
 
     } 
 
-    featurePickerService.updateTimesForObservations( viewer, startDate, endDate );
+    featurePickerService.updateTimesForObservations( startDate, endDate );
 
 }

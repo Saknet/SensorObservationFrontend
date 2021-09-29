@@ -1,7 +1,7 @@
 const Cesium = require( 'cesium/Cesium' );
 const observationsController = require( '../controllers/observations' );
 const featureInformationService = require( '../services/featureinformation' );
-const Plotly = require( 'plotly.js/dist/plotly' )
+const chartsService = require( '../services/charts' );
 
 var Pickers_3DTile_Activated = true;
 var startTime = new Date( Date.now() - 28800000 );
@@ -55,15 +55,7 @@ export function active3DTilePicker( viewer ) {
                 // nameOverlay.style.display = 'none';
                 return;
             }
-            // A feature was picked, so show it's overlay content
-            // nameOverlay.style.display = 'block';
-            // nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
-            // nameOverlay.style.left = movement.endPosition.x + 'px';
-            let name = feature.getProperty( 'CODE' );
-            if ( !Cesium.defined( name )) {
-                name = feature.getProperty( 'ID' );
-            }
-            // nameOverlay.textContent = name;
+
             // Highlight the feature if it's not already selected.
             if ( feature !== selected.feature ) {
 
@@ -75,27 +67,32 @@ export function active3DTilePicker( viewer ) {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE );
 
     // Color a feature on selection and show metadata in the InfoBox.
-    viewer.screenSpaceEventHandler.setInputAction(function onLeftClick( movement ) {
+    viewer.screenSpaceEventHandler.setInputAction( function onLeftClick( movement ) {
 
-        // Clear chart
-        deleteObservationChart();
 
         if ( Pickers_3DTile_Activated ) {
+
             // If a feature was previously selected, undo the highlight
             if ( Cesium.defined( selected.feature ) ) {
                 selected.feature.color = selected.originalColor;
                 selected.feature = undefined;
             }
+
+            // Clear charts
+            removeCharts();
             // Pick a new feature
             feature = viewer.scene.pick( movement.position );
+
             if ( !Cesium.defined( feature ) ) {
                 clickHandler( movement );
                 return;
             }
+
             // Select the feature if it's not already selected
             if ( selected.feature === feature ) {
                 return;
             }
+
             selected.feature = feature;
             // Save the selected feature's original color
             if (feature === highlighted.feature) {
@@ -112,12 +109,12 @@ export function active3DTilePicker( viewer ) {
             fetchObservationData( viewer );
 
         }
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK );
 
-    viewer.screenSpaceEventHandler.setInputAction(function onRightClick( ) {
+    viewer.screenSpaceEventHandler.setInputAction( function onRightClick() {
 
-        // Clear chart
-        deleteObservationChart();
+        // Clear charts
+        removeCharts();
 
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK); 
     
@@ -125,21 +122,35 @@ export function active3DTilePicker( viewer ) {
 
 function fetchObservationData() {
 
+    const attributes = feature.getProperty( 'attributes' )
     const gmlid = feature.getProperty( 'id' );
-    const RATU = feature.getProperty( 'RATU' );
-    const latitude = feature.getProperty( 'latitude' );
-    const longitude = feature.getProperty( 'longitude' );
+    const latitude = attributes[ 'latitude' ];
+    const longitude = attributes[ 'longitude' ];
+    let RATU =  attributes[ 'Rakennustunnus_(RATU)' ];
+
+    if ( RATU == null ) {
+
+        RATU = attributes[ 'ratu' ];
+
+    }
+
+    console.log( "attributes", attributes );
 
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
-        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ] ) 
-    );
+        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ] ) ).catch( 
+            ( e ) => {
+
+                console.log( 'something went wrong', e );
+                const filteredData = featureInformationService.filterFeatureData( feature );
+                chartsService.generateFeatureDataTable( filteredData );
+            } 
+        );
 }
 
-/* Function that clears observation chart and  */
-function deleteObservationChart() {
+/* Function that resets feature and calls chartservice to purge all charts*/
+function removeCharts() {
 
-    Plotly.purge( 'obsChart' );
-    Plotly.purge( 'featureInfo' );
+    chartsService.purgeAllCharts();
     feature = null;
 
 }

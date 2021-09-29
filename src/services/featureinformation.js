@@ -3,10 +3,11 @@ const chartsService = require( '../services/charts' );
 /* Function that generates feature information table  */
 export function generateFeatureInfoTable( featureData, observationData ) {
 
-    console.log( "featureData", featureData );
-
     const filteredFeatureData = filterFeatureData( featureData );
-    chartsService.generateFeatureDataTable( filteredFeatureData );
+
+    if ( filteredFeatureData != null ) {
+        chartsService.generateFeatureDataTable( filteredFeatureData );
+    }
 
     if ( !Array.isArray( observationData ) ) {
 
@@ -16,13 +17,14 @@ export function generateFeatureInfoTable( featureData, observationData ) {
     
 }
 
-function filterFeatureData( featureData ) {
+export function filterFeatureData( featureData ) {
+
     const keys = Object.keys( featureData.getProperty( 'attributes' ) );   
     const values = Object.values( featureData.getProperty( 'attributes' ) ); 
     let keysToKeep = [];
     let valuesToKeep = [];
 
-    for ( let i = 0; i < keys.length; i++ ) {
+    for ( let i = 0, len = keys.length; i < len; i++ ) {
 
         if ( values[ i ] != null && !keys[ i ].startsWith( 'Address' ) && keys[ i ] != 'integrating_person' && keys[ i ] != 'integration_date' && keys[ i ] != 'matching_mode' 
             && keys[ i ] != 'externalReference externalObjectName' && keys[ i ] != 'overlap_filter' && keys[ i ] != 'overlap_file_to_DB' && keys[ i ] != 'overlap_DB_to_file' 
@@ -35,14 +37,14 @@ function filterFeatureData( featureData ) {
     return [ keysToKeep, valuesToKeep ]
 }
 /* Function that processes found observation data for faster timeseries generation  */
-function findObservationsForUnit( selectedEntity, observationDataForUnit, unit ) {
+function findObservationsForUnit( selectedEntity, timevaluepairs, unit ) {
 
-    for ( let i = 0; i < observationDataForUnit.timevaluepairs.length; i++ ) {
+    for ( let i = 0, len = timevaluepairs.length; i < len; i++ ) {
 
         let time = new Date()
-        time.setTime( observationDataForUnit.timevaluepairs[ i ].time * 1000 );
-        let total = observationDataForUnit.timevaluepairs[ i ].totalvalue;
-        let average = observationDataForUnit.timevaluepairs[ i ].averagevalue;
+        time.setTime( timevaluepairs[ i ].time * 1000 );
+        let total = timevaluepairs[ i ].totalvalue;
+        let average = timevaluepairs[ i ].averagevalue;
 
         if ( total != null ) {
 

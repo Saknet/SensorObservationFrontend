@@ -112,6 +112,10 @@ export function generateObservationChart( observationData ) {
         title: "Sensor Observation Data",
         font: {
           size: 10
+        },
+        margin: {
+            b: 110,
+            t: 40
         }
     }
 
@@ -144,5 +148,25 @@ export function generateFeatureDataTable( featureData ) {
         }
     }]
 
-    Plotly.newPlot( 'featureInfo', data );
+    const layout = {
+
+        title: "Feature",
+        font: {
+          size: 10
+        },
+        margin: {
+            b: 20,
+            t: 40
+        }
+    }
+
+    Plotly.newPlot( 'featureInfo', data, layout );
+
+}
+
+export function purgeAllCharts() {
+
+    Plotly.purge( 'obsChart' );
+    Plotly.purge( 'featureInfo' );
+
 }
