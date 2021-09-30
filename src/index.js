@@ -57,7 +57,7 @@ function confirmTimes() {
     let clockGD = Cesium.JulianDate.toGregorianDate( viewer.clock.currentTime );
     let newEndDate = new Date( clockGD.year, clockGD.month - 1, clockGD.day, clockGD.hour + 3, clockGD.minute, clockGD.second, clockGD.millisecond );
 
-    if ( new Date( endDate ).getTime() >= new Date( newEndDate ).getTime() + 1 ) {
+    if ( new Date( Date.now() ) >= new Date( newEndDate ).getTime() ) {
         
         endDate = newEndDate;
         startDate = new Date( newEndDate - 3600000 * hours );
