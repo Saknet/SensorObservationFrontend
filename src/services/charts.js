@@ -4,12 +4,12 @@ export function generateObservationChart( observationData ) {
 
     let plotlyData = [];
 
-    if ( observationData[ 'w' ] != null ) {
+    if ( observationData[ 'watt' ] != null ) {
 
         const wTrace = {
 
-            x: observationData[ 'w' ].observationtimes,
-            y: observationData[ 'w' ].averages,
+            x: observationData[ 'watt' ].observationtimes,
+            y: observationData[ 'watt' ].averages,
             type: 'scatter',
             name: 'watts'
 
@@ -19,11 +19,11 @@ export function generateObservationChart( observationData ) {
 
     }
 
-    if ( observationData[ 'j' ] != null ) {
+    if ( observationData[ 'joule' ] != null ) {
 
         const jTrace = {
-            x: observationData[ 'j' ].observationtimes,
-            y: observationData[ 'j' ].averages,
+            x: observationData[ 'joule' ].observationtimes,
+            y: observationData[ 'joule' ].averages,
             type: 'scatter',
             name: 'joules'
         }; 
@@ -32,12 +32,12 @@ export function generateObservationChart( observationData ) {
 
     }
 
-    if ( observationData[ 'v' ] != null ) {
+    if ( observationData[ '"volt"' ] != null ) {
 
         const vTrace = {
 
-            x: observationData[ 'v' ].observationtimes,
-            y: observationData[ 'v' ].averages,
+            x: observationData[ 'volt' ].observationtimes,
+            y: observationData[ 'volt' ].averages,
             type: 'scatter',
             name: 'volts'
 
@@ -47,12 +47,12 @@ export function generateObservationChart( observationData ) {
 
     }
 
-    if ( observationData[ 'a' ] != null ) {
+    if ( observationData[ 'ampère' ] != null ) {
 
         const aTrace = {
 
-            x: observationData[ 'a' ].observationtimes,
-            y: observationData[ 'a' ].averages,
+            x: observationData[ 'ampère' ].observationtimes,
+            y: observationData[ 'ampère' ].averages,
             type: 'scatter',
             name: 'ampères'
 
@@ -62,12 +62,12 @@ export function generateObservationChart( observationData ) {
 
     }    
 
-    if ( observationData[ 'decibel' ] != null ) {
+    if ( observationData[ 'bel sound pressure' ] != null ) {
 
         const decibelTrace = {
 
-            x: observationData[ 'decibel' ].observationtimes,
-            y: observationData[ 'decibel' ].averages,
+            x: observationData[ 'bel sound pressure' ].observationtimes,
+            y: observationData[ 'bel sound pressure' ].averages,
             type: 'scatter',
             name: 'decibels'
 
@@ -77,12 +77,12 @@ export function generateObservationChart( observationData ) {
 
     } 
 
-    if ( observationData[ 'degreeCelsius' ] != null ) {
+    if ( observationData[ 'degree Celsius' ] != null ) {
 
         const degreeCelsiusTrace = {
 
-            x: observationData[ 'degreeCelsius' ].observationtimes,
-            y: observationData[ 'degreeCelsius' ].averages,
+            x: observationData[ 'degree Celsius' ].observationtimes,
+            y: observationData[ 'degree Celsius' ].averages,
             type: 'scatter',
             name: '°C'
 
@@ -92,12 +92,12 @@ export function generateObservationChart( observationData ) {
 
     } 
 
-    if ( observationData[ 'pm' ] != null ) {
+    if ( observationData[ 'particulate matter' ] != null ) {
 
         const pmTrace = {
 
-            x: observationData[ 'pm' ].observationtimes,
-            y: observationData[ 'pm' ].averages,
+            x: observationData[ 'particulate matter' ].observationtimes,
+            y: observationData[ 'particulate matter' ].averages,
             type: 'scatter',
             name: 'pm in air'
 
