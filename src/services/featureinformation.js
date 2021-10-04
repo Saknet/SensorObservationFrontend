@@ -1,7 +1,9 @@
 const chartsService = require( '../services/charts' );
 
 /* Function that generates feature information table  */
-export function generateFeatureInfoTable( featureData, observationData ) {
+export function generateFeatureInfoTable( featureData, observationData, requestStarted ) {
+
+    console.log('timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
 
     const filteredFeatureData = filterFeatureData( featureData );
 

@@ -134,11 +134,14 @@ function fetchObservationData() {
 
     }
 
+    const requestStarted = new Date( Date.now() );
+
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
-        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ] ) ).catch( 
+        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
 
                 console.log( 'something went wrong', e );
+                console.log('timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
                 const filteredData = featureInformationService.filterFeatureData( feature );
                 chartsService.generateFeatureDataTable( filteredData );
             } 
