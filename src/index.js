@@ -23,8 +23,8 @@ var viewer = new Cesium.Viewer("cesiumContainer", {
     baseLayerPicker: false,
     homeButton: false,
 	imageryProvider: new Cesium.WebMapServiceImageryProvider({
-    	url : 'https://kartta.hel.fi/ws/geoserver/avoindata/ows?SERVICE=WMS&',
-    	layers : 'avoindata:Opaskartta_Helsinki_harmaa',
+    	url : 'https://geoserver.hel.fi/geoserver/hel/wms?service=WMS&',
+    	layers : 'hel:OpPks_2m',
     	proxy: new Cesium.DefaultProxy('/proxy/')
 	}),
 	terrainProvider : new Cesium.EllipsoidTerrainProvider()
