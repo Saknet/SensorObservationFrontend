@@ -5,10 +5,11 @@ export function generateFeatureInfoTable( featureData, observationData, requestS
 
     console.log('timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
 
-    const filteredFeatureData = filterFeatureData( featureData );
+    if ( featureData ) {
 
-    if ( filteredFeatureData != null ) {
+        const filteredFeatureData = filterFeatureData( featureData );
         chartsService.generateFeatureDataTable( filteredFeatureData );
+
     }
 
     if ( !Array.isArray( observationData ) ) {
