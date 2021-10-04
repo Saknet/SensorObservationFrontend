@@ -14,8 +14,8 @@
                 end: endDate,
                 gmlid: gmlid,
                 ratu: ratu,
-                lat: latitude,
-                long: longitude
+                latitude: latitude,
+                longitude: longitude
             } )
       } );
 
