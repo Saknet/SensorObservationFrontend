@@ -128,11 +128,14 @@ function fetchObservationData() {
     const longitude = attributes[ 'longitude' ];
     let RATU =  attributes[ 'Rakennustunnus_(RATU)' ];
 
+    console.log("attributes ", attributes );
     if ( RATU == null ) {
 
         RATU = attributes[ 'ratu' ];
 
     }
+
+    console.log('ratu', RATU);
 
     const requestStarted = new Date( Date.now() );
 
