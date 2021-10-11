@@ -32,7 +32,7 @@ export function generateObservationChart( observationData ) {
 
     }
 
-    if ( observationData[ '"volt"' ] != null ) {
+    if ( observationData[ 'volt' ] != null ) {
 
         const vTrace = {
 
