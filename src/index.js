@@ -7,13 +7,13 @@ const confirmTimesButton = document.getElementById( "confirm-times" );
 var startDate = new Date( Date.now() - 28800000 );
 var endDate = new Date( Date.now() );
 var hours = 8;
+var tileseturl = 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json';
 
-confirmTimesButton.addEventListener("click", confirmTimes);
+confirmTimesButton.addEventListener( "click", confirmTimes );
 
 Cesium.Ion.defaultAccessToken = null;
-
 var viewer = new Cesium.Viewer("cesiumContainer", {
-	animation: true,
+    animation: true,
     fullscreenButton: false,
     geocoder: false,
     shadows: true,
@@ -22,31 +22,52 @@ var viewer = new Cesium.Viewer("cesiumContainer", {
     sceneModePicker: false,
     baseLayerPicker: false,
     homeButton: false,
-	imageryProvider: new Cesium.WebMapServiceImageryProvider({
-    	url : 'https://geoserver.hel.fi/geoserver/hel/wms?service=WMS&',
-    	layers : 'hel:OpPks_2m',
-    	proxy: new Cesium.DefaultProxy('/proxy/')
-	}),
-	terrainProvider : new Cesium.EllipsoidTerrainProvider()
+    imageryProvider: new Cesium.WebMapServiceImageryProvider({
+        url : 'https://kartta.hel.fi/ws/geoserver/avoindata/ows?SERVICE=WMS&',
+        layers : 'avoindata:Opaskartta_Helsinki_harmaa',
+        proxy: new Cesium.DefaultProxy('/proxy/')
+    }),
+    terrainProvider : new Cesium.EllipsoidTerrainProvider()
 });
 
-var tileset = viewer.scene.primitives.add( new Cesium.Cesium3DTileset( {
-    url: 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json',
-    show: true,
-    shadows: Cesium.ShadowMode.ENABLED,
-    maximumScreenSpaceError: 4
-} ) )
 
-Cesium.when( tileset.readyPromise ).then( function ( tileset ) { viewer.flyTo( tileset ) } ).then( featurePickerService.active3DTilePicker( viewer, startDate, endDate ) );
+activateTileset();
+
+function activateTileset() {
+
+    var tileset = viewer.scene.primitives.add( new Cesium.Cesium3DTileset( {
+        url: tileseturl,
+        show: true,
+        shadows: Cesium.ShadowMode.ENABLED,
+        maximumScreenSpaceError: 4
+    } ) )
+
+    Cesium.when( tileset.readyPromise ).then( function ( tileset ) { viewer.flyTo( tileset ) } ).then( featurePickerService.active3DTilePicker( viewer, startDate, endDate ) );
+}
 
 /* Handles change of hours  */
 window.onload = function() {
 
     let hoursselect = document.getElementById('hours-list');
+    let tilesetselect = document.getElementById('tileset-list');
 
     hoursselect.onchange = function() {
 
         hours = hoursselect.value;
+      
+    } 
+
+    tilesetselect.onchange = function() {
+
+        tileseturl = 'https://geo.fvh.fi/tilesets/simpletest/tileset.json';
+
+        if ( tilesetselect.value == 'helsinki' ) {
+
+            tileseturl = 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json';     
+
+        }
+
+        activateTileset();
       
     } 
 }

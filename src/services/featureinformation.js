@@ -22,8 +22,24 @@ export function generateFeatureInfoTable( featureData, observationData, requestS
 
 export function filterFeatureData( featureData ) {
 
-    const keys = Object.keys( featureData.getProperty( 'attributes' ) );   
-    const values = Object.values( featureData.getProperty( 'attributes' ) ); 
+    let keys = [];
+    let values = [];
+
+    if ( featureData.getProperty( 'attributes' ) ) {
+
+        keys = Object.keys( featureData.getProperty( 'attributes' ) );   
+        values = Object.values( featureData.getProperty( 'attributes' ) ); 
+
+    }
+
+    if ( !keys.length && !values.length ) {
+
+        const expTilesetData = getFeatureDataForExperiementalTileset( featureData );
+        keys = expTilesetData[0];
+        values = expTilesetData[1];
+
+    }
+
     let keysToKeep = [];
     let valuesToKeep = [];
 
@@ -39,6 +55,69 @@ export function filterFeatureData( featureData ) {
 
     return [ keysToKeep, valuesToKeep ]
 }
+
+function getFeatureDataForExperiementalTileset( feature ) {
+    let keys = [];
+    let values = [];
+
+    const gmlid = feature.getProperty( 'gmlid' );
+    
+    if ( gmlid ) {
+
+        keys.push( 'gmlid' );
+        values.push( gmlid );
+
+    }
+
+    const height = feature.getProperty( 'citygml_measured_height' );
+    
+    if ( height ) {
+
+        keys.push( 'height' );
+        values.push( height );
+
+    }
+
+    const roof = feature.getProperty( 'citygml_roof_type' );
+    
+    if ( roof ) {
+
+        keys.push( 'roof' );
+        values.push( roof );
+
+    }
+
+    const storeys = feature.getProperty( 'citygml_storeys_above_ground' );
+    
+    if ( storeys ) {
+
+        keys.push( 'storeys' );
+        values.push( storeys );
+
+    }
+
+    const latitude = feature.getProperty( 'latitude' );
+    
+    if ( latitude ) {
+
+        keys.push( 'latitude' );
+        values.push( latitude );
+
+    }
+
+    const longitude = feature.getProperty( 'longitude' );
+    
+    if ( longitude ) {
+
+        keys.push( 'longitude' );
+        values.push( longitude );
+
+    }
+
+    return [ keys, values ]
+
+}
+
 /* Function that processes found observation data for faster timeseries generation  */
 function findObservationsForUnit( selectedEntity, timevaluepairs, unit ) {
 

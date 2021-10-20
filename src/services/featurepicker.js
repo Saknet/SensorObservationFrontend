@@ -122,24 +122,46 @@ export function active3DTilePicker( viewer ) {
 
 function fetchObservationData() {
 
+    let gmlid = null;
+    let ratu = null;
+    let latitude = null;
+    let longitude = null;
+
     const attributes = feature.getProperty( 'attributes' )
-    const gmlid = feature.getProperty( 'id' );
-    const latitude = attributes[ 'latitude' ];
-    const longitude = attributes[ 'longitude' ];
-    let RATU =  attributes[ 'Rakennustunnus_(RATU)' ];
 
-    console.log("attributes ", attributes );
-    if ( RATU == null ) {
+     gmlid = feature.getProperty( 'id' );
 
-        RATU = attributes[ 'ratu' ];
+    if ( attributes ) {
+
+        gmlid = feature.getProperty( 'id' );
+        latitude = attributes[ 'latitude' ];
+        longitude = attributes[ 'longitude' ];
+        ratu =  attributes[ 'Rakennustunnus_(RATU)' ];
+    
+        if ( !ratu ) {
+    
+            ratu = attributes[ 'ratu' ];
+    
+        }
+
+    } else {
+
+        gmlid = feature.getProperty( 'gmlid' );
+        latitude = feature.getProperty( 'latitude' ) ;
+        longitude = feature.getProperty( 'longitude' );
+        ratu =  feature.getProperty( 'Rakennustunnus_(RATU)' );
+    
+        if ( !ratu ) {
+    
+            ratu = feature.getProperty( 'ratu' );
+    
+        }
 
     }
 
-    console.log('ratu', RATU);
-
     const requestStarted = new Date( Date.now() );
 
-    observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, RATU, latitude, longitude ).then( 
+    observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
         observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
 
