@@ -5,20 +5,12 @@ export function initializeViewPort( Cesium, viewer, longitude, latitude ) {
     var south = 60.14;
     var east = 24.99;
     var north = 60.19;
-    var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
+    var rectangle = Cesium.Rectangle.fromDegrees( west, south, east, north );
 
     Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
     Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
 
-    viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees( longitude, latitude, 500.0 ),
-        duration: 0.0,
-        orientation: {
-            heading: 0.0,
-            pitch: Cesium.Math.toRadians( -35.0 ),
-            roll: 0.0
-        }
-    });
+    moveCameraTo( Cesium, viewer, longitude, latitude );
 
     //Further shadow configuration
 	viewer.shadowMap.enabled = true;
@@ -28,6 +20,20 @@ export function initializeViewPort( Cesium, viewer, longitude, latitude ) {
 
     //Rendering resolution configuration
     viewer.resolutionScale = 1;
+
+}
+
+//Moves camera to specified latitude, longitude coordinates 
+export function moveCameraTo( Cesium, viewer, longitude, latitude ) {
+
+    viewer.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees( longitude, latitude - 0.0065, 500.0 ),
+        orientation: {
+            heading: 0.0,
+            pitch: Cesium.Math.toRadians( -35.0 ),
+            roll: 0.0
+        }
+    });
 
 }
 

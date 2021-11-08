@@ -6,8 +6,10 @@ const featurePickerService = require( './services/featurepicker' );
 const geocodingApi = require( './controllers/geocoding' );
 const geocodingService = require( './services/geocoding' );
 const confirmTimesButton = document.getElementById( "confirm-times" );
-const searchField = document.getElementById( "addressSearch" );
-const utils = require( './utils/tilesets' );
+const citydistricts = geocodingService.helsinkidistricts;
+
+var searchField = document.getElementById( "addressSearch" );
+const utils = require( './utils/camera' );
 var addressResult = document.getElementById( "address-result" );
 var startDate = new Date( Date.now() - 28800000 );
 var endDate = new Date( Date.now() );
@@ -18,20 +20,12 @@ var viewer;
 
 init();
 
-function init( longitude, latitude ) {
+function init() {
 
     addEventListeners()
     initViewer();
-
-    if ( longitude && latitude ) {
-        
-        activateTileset( longitude, latitude, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json' );  
-
-    } else {
-
-        activateTileset( 24.983, 60.178, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json' );  
-
-    }
+    activateTileset( 24.983, 60.1845, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json' );  
+ 
 }
 
 function addEventListeners() {
@@ -44,11 +38,7 @@ function addEventListeners() {
 
 function initViewer() {
     
- //   Cesium.Ion.defaultAccessToken = null;
-    viewer = null;
-
-    console.log("viewer", viewer);
-
+    Cesium.Ion.defaultAccessToken = null;
     viewer = new Cesium.Viewer("cesiumContainer", {
         animation: true,
         fullscreenButton: false,
@@ -71,10 +61,6 @@ function initViewer() {
 
 function activateTileset( longitude, latitude, tileseturl ) {
 
-    console.log("ll", longitude, latitude  );
-
-    viewer.scene = null;
-
     viewer.scene.primitives.add( new Cesium.Cesium3DTileset( {
         url: tileseturl,
         show: true,
@@ -89,18 +75,35 @@ function activateTileset( longitude, latitude, tileseturl ) {
     featurePickerService.active3DTilePicker( viewer, startDate, endDate );
 }
 
-/* Handles change of hours  */
 window.onload = function() {
 
     let hoursselect = document.getElementById('hours-list');
     let tilesetselect = document.getElementById('tileset-list');
+    let districtselect = document.getElementById( "district-select" );
 
+    addCityDistricts();
+
+    /* Handles change of hours  */
     hoursselect.onchange = function() {
 
         hours = hoursselect.value;
       
     } 
 
+    districtselect.onchange = function() {
+
+        for ( let i = 0; i < citydistricts.length; i++ ) {
+
+            if ( citydistricts[ i ].name == districtselect.value ) {
+    
+                utils.moveCameraTo( Cesium, viewer, citydistricts[ i ].longitude, citydistricts[ i ].latitude );
+                break;
+    
+            }
+        }
+    }
+
+    /* Handles change of tilesets  */
     tilesetselect.onchange = function() {
 
         var tileseturl = 'https://geo.fvh.fi/tilesets/simpletest/tileset.json';
@@ -109,9 +112,23 @@ window.onload = function() {
             tileseturl = 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json';
         }
 
-        activateTileset( 24.983, 60.178, tileseturl );
+        activateTileset( 24.983, 60.1845, tileseturl );
       
     } 
+}
+
+function addCityDistricts() {
+
+    var select = document.getElementById( "district-select" );
+
+    for ( let i = 0; i < citydistricts.length; i++ ) {
+        var citydistrict = citydistricts[ i ][ 'name' ];
+        var el = document.createElement("option");
+        el.textContent = citydistrict;
+        el.value = citydistrict;
+        select.appendChild(el);
+    }
+
 }
 
 /* Function that confirms time selection and restarts feature picker service */
@@ -143,12 +160,11 @@ async function filterSearchResults () {
     if ( searchField.value.length > 2 ) {
 
         let data = await geocodingApi.digitransitAutocompleteApi( searchField.value );
+
         if ( data ) {
     
             addressData = geocodingService.processAddressData( data['features'] );
-
-            var streetAddresses = addressData.map( d => d.address );
-
+            let streetAddresses = addressData.map( d => d.address );
             renderStreetAddress( streetAddresses );
     
         }
@@ -186,12 +202,13 @@ function renderStreetAddress( addresses ) {
 
             lat = addressData[ i ].latitude;
             long = addressData[ i ].longitude;
+            break;
 
         }
     } 
 
-    const center = Cesium.Cartesian3.fromDegrees( long, lat );
-    viewer.camera.lookAt( center, new Cesium.Cartesian3( 0, 0, 500 ) );
+    utils.moveCameraTo( Cesium, viewer, long, lat );
     document.getElementById( "address-result" ).innerHTML = '';
+    document.getElementById( "addressSearch" ).value = text;
 
  }

@@ -3,8 +3,6 @@ export async function digitransitAutocompleteApi( text ) {
 
     const url = 'https://api.digitransit.fi/geocoding/v1/autocomplete?text=' + text;
 
-    console.log( "url", url );
-
     const response = await fetch( url );
 
     if ( !response.ok )  {
