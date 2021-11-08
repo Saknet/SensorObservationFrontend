@@ -3,7 +3,7 @@
 		<meta charset="utf-8">
 	  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	  	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-		<title>Cesium + Webpack</title>
+		<title>Sensor Observation experiement</title>
 	</head>
 	<body>
 		<div id="cesiumContainer">
@@ -39,6 +39,10 @@
             	<option value="helsinki" selected >Helsinki</option>
             	<option value="experiemental">Experiemental</option>					
         	</select>
+
+			<form autocomplete="off"><input type="text" name="addressSearch" id="addressSearch" placeholder="Search address" size="25" >
+				<div id="address-result"></div>
+			</form>
 			<div id='obsChart' style='float: left;'></div>
 			<div id='featureInfo' style='float: right;'></div>
 		</div>
