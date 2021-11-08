@@ -123,10 +123,10 @@ function addCityDistricts() {
 
     for ( let i = 0; i < citydistricts.length; i++ ) {
         var citydistrict = citydistricts[ i ][ 'name' ];
-        var el = document.createElement("option");
+        var el = document.createElement( "option" );
         el.textContent = citydistrict;
         el.value = citydistrict;
-        select.appendChild(el);
+        select.appendChild( el );
     }
 
 }
@@ -135,9 +135,9 @@ function addCityDistricts() {
 function confirmTimes() {
 
     let clockGD = Cesium.JulianDate.toGregorianDate( viewer.clock.currentTime );
-    let newEndDate = new Date( clockGD.year, clockGD.month - 1, clockGD.day, clockGD.hour + 3, clockGD.minute, clockGD.second, clockGD.millisecond );
+    let newEndDate = new Date( clockGD.year, clockGD.month - 1, clockGD.day, clockGD.hour + 2, clockGD.minute, clockGD.second, clockGD.millisecond );
 
-    if ( new Date( Date.now() ) >= new Date( newEndDate ).getTime() ) {
+    if ( new Date( Date.now()).getTime() >= new Date( newEndDate ).getTime() ) {
         
         endDate = newEndDate;
         startDate = new Date( newEndDate - 3600000 * hours );
