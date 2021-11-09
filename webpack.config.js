@@ -56,7 +56,7 @@ module.exports = {
     ],
 	// development server options
     devServer: {
-        contentBase: path.join(__dirname, "dist")
+        static: path.join(__dirname, "dist")
     },
 	mode: 'development',
 	resolve: {
