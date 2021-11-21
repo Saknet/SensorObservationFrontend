@@ -1,19 +1,24 @@
 require( './css/main.css' );
 require( 'cesium/Widgets/widgets.css' );
+require('bootstrap/dist/css/bootstrap.min.css')
 
 const Cesium = require( 'cesium/Cesium' );
 const featurePickerService = require( './services/featurepicker' );
 const geocodingApi = require( './controllers/geocoding' );
 const geocodingService = require( './services/geocoding' );
-const confirmTimesButton = document.getElementById( "confirm-times" );
+const searchButton = document.getElementById( "searchButton" );
+const clearButton = document.getElementById( "clearButton" );
 const citydistricts = geocodingService.helsinkidistricts;
+const $ = require( 'jquery');
+const moment = require( 'moment' );
+const daterangepicker = require( 'daterangepicker' )
 
-var searchField = document.getElementById( "addressSearch" );
+var searchField = document.getElementById( "searchInput" );
 const utils = require( './utils/camera' );
-var addressResult = document.getElementById( "address-result" );
-var startDate = new Date( Date.now() - 28800000 );
-var endDate = new Date( Date.now() );
-var hours = 8;
+var addressResult = document.getElementById( "searchresults" );
+var searchresultscontainer = document.getElementById('searchresultscontainer');
+var startTime = new Date( Date.now() - 28800000 );
+var endTime = new Date( Date.now() );
 var addressData = null;
 
 var viewer;
@@ -24,13 +29,14 @@ function init() {
 
     addEventListeners()
     initViewer();
-    activateTileset( 24.983, 60.1845, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json' );  
+    activateTileset( 24.976, 60.1845, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json' );  
  
 }
 
 function addEventListeners() {
 
-    confirmTimesButton.addEventListener( "click", confirmTimes );
+    searchButton.addEventListener( "click", checkSearch );
+    clearButton.addEventListener( "click", clearSearch );
     searchField.addEventListener( "keyup", filterSearchResults );
     addressResult.addEventListener( "click", moveCameraToAddress );
 
@@ -40,7 +46,7 @@ function initViewer() {
     
     Cesium.Ion.defaultAccessToken = null;
     viewer = new Cesium.Viewer("cesiumContainer", {
-        animation: true,
+        animation: false,
         fullscreenButton: false,
         geocoder: false,
         shadows: true,
@@ -72,23 +78,40 @@ function activateTileset( longitude, latitude, tileseturl ) {
 
 
 //    utils.constructTrimBox( tileset, 10000, 18000, 6000, 10000, 1000, 1000, true, 5, Cesium );
-    featurePickerService.active3DTilePicker( viewer, startDate, endDate );
+    featurePickerService.active3DTilePicker( viewer );
 }
 
 window.onload = function() {
 
-    let hoursselect = document.getElementById('hours-list');
-    let tilesetselect = document.getElementById('tileset-list');
-    let districtselect = document.getElementById( "district-select" );
+    $(function() {
+        $('input[name="datetimes"]').daterangepicker({
 
+            timePicker: true,
+            startDate: moment().subtract(8, 'hours'),
+            endDate: moment(),
+            minDate: moment().subtract(90, 'days'),
+            maxDate: moment(),
+            locale: {
+                format: 'DD.M.Y HH:mm'
+            }
+
+        });
+
+        $('input[name="datetimes"]').on('apply.daterangepicker', function(ev, picker) {
+
+            startTime = picker.startDate._d;
+            endTime = picker.endDate._d; 
+            featurePickerService.updateTimesForObservations( startTime, endTime );
+
+        });
+
+      });
+
+    let tilesetselect = document.getElementById( 'tileset-list' );
+    let districtselect = document.getElementById( 'district-select' );
+    
+    clearSearch()
     addCityDistricts();
-
-    /* Handles change of hours  */
-    hoursselect.onchange = function() {
-
-        hours = hoursselect.value;
-      
-    } 
 
     districtselect.onchange = function() {
 
@@ -119,43 +142,49 @@ window.onload = function() {
 
 function addCityDistricts() {
 
-    var select = document.getElementById( "district-select" );
+    let select = document.getElementById( "district-select" );
 
     for ( let i = 0; i < citydistricts.length; i++ ) {
-        var citydistrict = citydistricts[ i ][ 'name' ];
-        var el = document.createElement( "option" );
+
+        let citydistrict = citydistricts[ i ][ 'name' ];
+        let el = document.createElement( "option" );
         el.textContent = citydistrict;
         el.value = citydistrict;
         select.appendChild( el );
+
+        if ( citydistrict == 'Sörnäinen' ) {
+
+            select.options.selectedIndex = i;  
+
+        }
     }
 
 }
 
-/* Function that confirms time selection and restarts feature picker service */
-function confirmTimes() {
+/* Function that check if there is only one value in searchresults and moves camera to the location */
+function checkSearch() {
 
-    let clockGD = Cesium.JulianDate.toGregorianDate( viewer.clock.currentTime );
-    let newEndDate = new Date( clockGD.year, clockGD.month - 1, clockGD.day, clockGD.hour + 2, clockGD.minute, clockGD.second, clockGD.millisecond );
+    if ( addressData.length == 1 ) {
 
-    if ( new Date( Date.now()).getTime() >= new Date( newEndDate ).getTime() ) {
-        
-        endDate = newEndDate;
-        startDate = new Date( newEndDate - 3600000 * hours );
+        utils.moveCameraTo( Cesium, viewer, addressData[ 0 ].longitude, addressData[ 0 ].latitude );
+        document.getElementById( "searchresults" ).innerHTML = '';
+            
+    }
+}
 
-    } else {
+/* Function that check if there is only one value in searchresults */
+function clearSearch() {
     
-        startDate = new Date( Date.now() - 3600000 * hours );
-        endDate = new Date( Date.now() );
-        alert( "Selected time can't be in the future" );
-
-    } 
-
-    featurePickerService.updateTimesForObservations( startDate, endDate );
+    searchresultscontainer.style.display='none';
+    document.getElementById( "searchInput" ).value = '';
+    addressData = null;
 
 }
 
 /* Function that filters search results */
 async function filterSearchResults () {
+
+    searchresultscontainer.style.display='none';
 
     if ( searchField.value.length > 2 ) {
 
@@ -163,7 +192,7 @@ async function filterSearchResults () {
 
         if ( data ) {
     
-            addressData = geocodingService.processAddressData( data['features'] );
+            addressData = geocodingService.processAddressData( data[ 'features' ] );
             let streetAddresses = addressData.map( d => d.address );
             renderStreetAddress( streetAddresses );
     
@@ -182,8 +211,8 @@ function renderStreetAddress( addresses ) {
         liElemet += `<dt>${ addresses[ i ] }</dt>`
 
     }
-
-    document.getElementById( "address-result" ).innerHTML = liElemet;
+    searchresultscontainer.style.display = 'block';
+    document.getElementById( "searchresults" ).innerHTML = liElemet;
 
  }
 
@@ -208,7 +237,6 @@ function renderStreetAddress( addresses ) {
     } 
 
     utils.moveCameraTo( Cesium, viewer, long, lat );
-    document.getElementById( "address-result" ).innerHTML = '';
-    document.getElementById( "addressSearch" ).value = text;
-
+    document.getElementById( "searchresults" ).innerHTML = '';
+    document.getElementById( "searchInput" ).value = text;
  }

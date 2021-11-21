@@ -6,46 +6,76 @@
 		<title>Sensor Observation experiement</title>
 	</head>
 	<body>
-		<div id="cesiumContainer">
-			To display observation results related to picked feature choose time from bottom left corner and select here how many hours of results will be shown:  
-			<select id="hours-list" name="hours">
-            	<option value="2">2 hours</option>
-            	<option value="3">3 hours</option>
-            	<option value="4">4 hours</option>
-            	<option value="5">5 hours</option>
-            	<option value="6">6 hours</option>
-				<option value="7">7 hours</option>
-            	<option value="8" selected>8 hours</option>
-            	<option value="9">9 hours</option>
-            	<option value="10">10 hours</option>
-            	<option value="11">11 hours</option>
-            	<option value="12">12 hours</option>
-            	<option value="13">13 hours</option>
-            	<option value="14">14 hours</option>
-            	<option value="15">15 hours</option>
-            	<option value="16">16 hours</option>
-				<option value="17">17 hours</option>
-            	<option value="18">18 hours</option>
-            	<option value="19">19 hours</option>
-            	<option value="20">20 hours</option>
-            	<option value="21">21 hours</option>
-            	<option value="22">22 hours</option>
-            	<option value="23">23 hours</option>
-            	<option value="24">24 hours</option>						
-        	</select>
-			<button class="mdl-button mdl-js-button mdl-button--primary" id="confirm-times" >Change observation times</button>
-			Select tileset:
-			<select id="tileset-list" name="tiles">
-            	<option value="helsinki" selected >Helsinki</option>
-            	<option value="experiemental">Experiemental</option>					
-        	</select>
-			Show district: 
+	
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+   <div class="container-fluid">
+      	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      		<span class="navbar-toggler-icon"></span>
+    	</button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	    <li class="nav-item">
+                    <div id="searchcontainer" class="container-fluid">
+                        <form role="search">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+                                    <input type="search" class="form-control" placeholder="Name or address" id="searchInput" autocomplete="off" />
+                                </div>
+								<div id="searchresultscontainer" class="container-fluid hidden">
+                       	 			<div class="panel-group" id="searchresults" role="tablist"></div>
+                    			</div>
+                            </div>
+                        </form>
+                    </div>
+
+
+        </li>
+
+		<li class="nav-item">
+            <div class="form-group">
+				<button class="btn btn-primary btn-block" id="searchButton">Move to target</button>
+                <button class="btn btn-outline-secondary" id="clearButton">Clear results</button>
+            </div>
+        </li>
+	</ul>
+		
+	<div id='selects' style='float: right;'>
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	    <li class="nav-item">
+			<label for="datetimepicker">Pick dates for displaying sensor observations:</label>
+        	<input type="text" size="30" id="datetimepicker" name="datetimes" value="" />
+        </li>
+
+        <li class="nav-item">
+			<label for="datetimepicker">Show district:</label>
 			<select id="district-select" name="citydistrict"></select>
-			<form autocomplete="off"><input type="text" name="addressSearch" id="addressSearch" placeholder="Search address" size="25" >
-				<div id="address-result"></div>
-			</form>
+        </li>
+
+		<li class="nav-item">
+		<label for="tileset-list">Tileset:</label>
+		<select id="tileset-list" name="tiles">
+            <option value="helsinki" selected >Helsinki</option>
+            <option value="experiemental">Experiemental</option>					
+        </select>        
+		</li>
+
+      </ul>
+
+	</div>
+
+    </div>
+  </div>
+</nav>
+		<div id="cesiumContainer">
 			<div id='obsChart' style='float: left;'></div>
 			<div id='featureInfo' style='float: right;'></div>
 		</div>
 	</body>
+
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </html>
