@@ -14,7 +14,7 @@ export function updateTimesForObservations( start, end ) {
     startTime = start;
     endTime = end;
 
-    if ( feature != null ) {
+    if ( feature ) {
 
         fetchObservationData();
 
@@ -160,17 +160,18 @@ async function fetchObservationData() {
     }
 
     const requestStarted = new Date( Date.now() );
-
+    
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
         observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
-
+    
                 console.log( 'something went wrong', e );
-                console.log('timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
+                console.log( 'timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
                 const filteredData = featureInformationService.filterFeatureData( feature );
                 chartsService.generateFeatureDataTable( filteredData );
+
             } 
-        );
+        );          
 }
 
 /* Function that resets feature and calls chartservice to purge all charts*/

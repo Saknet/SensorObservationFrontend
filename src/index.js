@@ -101,10 +101,18 @@ window.onload = function() {
 
         $('input[name="datetimes"]').on('apply.daterangepicker', function(ev, picker) {
 
-            startTime = picker.startDate._d;
-            endTime = picker.endDate._d; 
-            featurePickerService.updateTimesForObservations( startTime, endTime );
+            if ( picker.endDate._d.getTime() - picker.startDate._d.getTime() < 604801000 ) {
 
+                startTime = picker.startDate._d;
+                endTime = picker.endDate._d; 
+                featurePickerService.updateTimesForObservations( startTime, endTime );
+
+            } else {
+
+                alert( 'selected time period is too large');
+
+            }
+                        
         });
 
       });
