@@ -23,8 +23,6 @@ var addressData = null;
 
 var viewer;
 
-init();
-
 function init() {
 
     addEventListeners()
@@ -38,7 +36,7 @@ function addEventListeners() {
     searchButton.addEventListener( "click", checkSearch );
     clearButton.addEventListener( "click", clearSearch );
     searchField.addEventListener( "keyup", filterSearchResults );
-    addressResult.addEventListener( "click", moveCameraToAddress );
+    addressResult.addEventListener( "click", moveCameraToLocation);
 
 }
 
@@ -83,6 +81,10 @@ function activateTileset( longitude, latitude, tileseturl ) {
 
 window.onload = function() {
 
+    init();
+    clearSearch()
+    addCityDistricts();
+
     $(function() {
         $('input[name="datetimes"]').daterangepicker({
 
@@ -110,8 +112,6 @@ window.onload = function() {
     let tilesetselect = document.getElementById( 'tileset-list' );
     let districtselect = document.getElementById( 'district-select' );
     
-    clearSearch()
-    addCityDistricts();
 
     districtselect.onchange = function() {
 
@@ -140,6 +140,7 @@ window.onload = function() {
     } 
 }
 
+/* Loads city district names to select */
 function addCityDistricts() {
 
     let select = document.getElementById( "district-select" );
@@ -194,7 +195,7 @@ async function filterSearchResults () {
     
             addressData = geocodingService.processAddressData( data[ 'features' ] );
             let streetAddresses = addressData.map( d => d.address );
-            renderStreetAddress( streetAddresses );
+            renderSearchResult( streetAddresses );
     
         }
 
@@ -202,7 +203,8 @@ async function filterSearchResults () {
 
 }
 
-function renderStreetAddress( addresses ) {
+/* Renders autocomplete search result */
+function renderSearchResult( addresses ) {
 
     let liElemet = "" ;
 
@@ -216,7 +218,8 @@ function renderStreetAddress( addresses ) {
 
  }
 
- function moveCameraToAddress( e ) {
+ /* Finds coordinates for street address / search term and moves camera to the found coordinates */
+ function moveCameraToLocation( e ) {
 
     let lat;
     let long;
