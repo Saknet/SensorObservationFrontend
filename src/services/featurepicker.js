@@ -120,7 +120,7 @@ export function active3DTilePicker( viewer ) {
     
 }
 
-function fetchObservationData() {
+async function fetchObservationData() {
 
     let gmlid = null;
     let ratu = null;
@@ -161,7 +161,22 @@ function fetchObservationData() {
 
     const requestStarted = new Date( Date.now() );
 
-    observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
+
+        let response = await fetch('https://geo.fvh.fi/observationdata/features');
+        if (!response.ok) {
+            let message = `An error has occured: ${response.status}`;
+            throw new Error(message);
+        }
+
+    
+        let data = await response.json();
+        console.log( 'data', data );
+
+
+    console.log( 'startTime', startTime );
+    console.log('endTime ', endTime );
+
+    observationsController.findObservations( 'https://geo.fvh.fi/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
         observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
 
