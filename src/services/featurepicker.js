@@ -2,6 +2,7 @@ const Cesium = require( 'cesium/Cesium' );
 const observationsController = require( '../controllers/observations' );
 const featureInformationService = require( '../services/featureinformation' );
 const chartsService = require( '../services/charts' );
+const $ = require( 'jquery');
 
 var Pickers_3DTile_Activated = true;
 var startTime = new Date( Date.now() - 28800000 );
@@ -160,11 +161,14 @@ async function fetchObservationData() {
     }
 
     const requestStarted = new Date( Date.now() );
-    
+    let savedFeature = feature;
+
+    $("#loadingicon").toggle();
+
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
-        observationData => featureInformationService.generateFeatureInfoTable( feature, observationData[ 'observations' ], requestStarted ) ).catch( 
+        observationData => featureInformationService.generateFeatureInfoTable( savedFeature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
-    
+
                 console.log( 'something went wrong', e );
                 console.log( 'timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
                 const filteredData = featureInformationService.filterFeatureData( feature );

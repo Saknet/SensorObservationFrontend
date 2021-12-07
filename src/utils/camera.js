@@ -59,9 +59,6 @@ export function constructTrimBox( tileset, minX, maxX, minY, maxY, minZ, maxZ, u
         ]
     });
 
-    console.log( "clipping planes", clippingPlanes );
-
-
     tileset.clippingPlanes = clippingPlanes;
     clippingPlanes.edgeWidth = width;
 

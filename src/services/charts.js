@@ -1,7 +1,21 @@
 const Plotly = require( 'plotly.js/dist/plotly' )
 
-export function generateObservationChart( observationData ) {
+function createTitle( address ) {
 
+    if ( address ) {
+
+        return address + ' Sensor Observation Data';
+
+    } else {
+
+        return 'Sensor Observation Data';
+
+    }      
+}
+
+export function generateObservationChart( observationData, address ) {
+
+    let chartTitle = createTitle( address );
     let plotlyData = [];
 
     if ( observationData[ 'watt' ] != null ) {
@@ -109,7 +123,7 @@ export function generateObservationChart( observationData ) {
 
     const layout = {
 
-        title: "Sensor Observation Data",
+        title: chartTitle,
         font: {
           size: 10
         },

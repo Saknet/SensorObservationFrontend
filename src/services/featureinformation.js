@@ -1,4 +1,6 @@
 const chartsService = require( '../services/charts' );
+const $ = require( 'jquery');
+
 
 /* Function that generates feature information table  */
 export function generateFeatureInfoTable( featureData, observationData, requestStarted ) {
@@ -14,10 +16,10 @@ export function generateFeatureInfoTable( featureData, observationData, requestS
 
     if ( !Array.isArray( observationData ) ) {
 
-        chartsService.generateObservationChart( observationData );
+        chartsService.generateObservationChart( observationData, featureData.getProperty( 'attributes' )[ 'Katuosoite' ] );
 
-    }   
-    
+    }
+
 }
 
 export function filterFeatureData( featureData ) {
@@ -52,6 +54,8 @@ export function filterFeatureData( featureData ) {
                 valuesToKeep.push( values[ i ] );
         }
     }
+
+    $("#loadingicon").hide();
 
     return [ keysToKeep, valuesToKeep ]
 }
