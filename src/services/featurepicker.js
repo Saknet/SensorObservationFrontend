@@ -5,15 +5,24 @@ const chartsService = require( '../services/charts' );
 const $ = require( 'jquery');
 
 var Pickers_3DTile_Activated = true;
-var startTime = new Date( Date.now() - 28800000 );
+var startTime = new Date( Date.now() - 28800000 - 1800000 );
 var endTime = new Date( Date.now() );
 var feature = null;
 
 /* Function that updates times needed for retrieving observations data */
 export function updateTimesForObservations( start, end ) {
 
-    startTime = start;
-    endTime = end;
+    startTime = new Date( start.getTime() - 1800000 );
+
+    if ( end.getTime() + 1800000 < new Date( Date.now() ).getTime() ) {
+       
+        endTime = new Date( end.getTime() + 1800000 );
+
+    } else {
+
+        endTime = new Date( Date.now() );
+
+    } 
 
     if ( feature ) {
 

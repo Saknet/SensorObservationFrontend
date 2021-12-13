@@ -102,10 +102,11 @@ window.onload = function() {
 
         $('input[name="datetimes"]').on('apply.daterangepicker', function(ev, picker) {
 
-            if ( picker.endDate._d.getTime() - picker.startDate._d.getTime() < 604801000 ) {
+            let startTime = picker.startDate._d;
+            let endTime = picker.endDate._d; 
 
-                startTime = picker.startDate._d;
-                endTime = picker.endDate._d; 
+            if ( startTime.getTime() - endTime.getTime() < 604801000 ) {
+
                 featurePickerService.updateTimesForObservations( startTime, endTime );
 
             } else {
@@ -185,7 +186,7 @@ function checkSearch() {
 /* Function that check if there is only one value in searchresults */
 function clearSearch() {
     
-    searchresultscontainer.style.display='none';
+    searchresultscontainer.style.display = 'none';
     document.getElementById( "searchInput" ).value = '';
     addressData = null;
 
@@ -194,7 +195,7 @@ function clearSearch() {
 /* Function that filters search results */
 async function filterSearchResults () {
 
-    searchresultscontainer.style.display='none';
+    searchresultscontainer.style.display = 'none';
 
     if ( searchField.value.length > 2 ) {
 
