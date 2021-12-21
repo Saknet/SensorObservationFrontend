@@ -1,4 +1,16 @@
-  /* Function that gets observations from backend */
+  
+  /** 
+   * Sends post request to backend service to retrive timeserialzied sensor observation results for the feature
+   * 
+   * @param { string } url url backend service
+   * @param { date } startDate the start date of observations
+   * @param { date } endDate  the end date of observations
+   * @param { string } gmlid  cityGML id of the feature
+   * @param { string } ratu  if feature is a building it has ratu
+   * @param { number } latitude  GPS coordinates of the feature
+   * @param { number } longitude  GPS coordinates of the feature
+   * @return { object } data found
+   */
   export async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
   
     const response = await fetch( url, {

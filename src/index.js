@@ -17,12 +17,13 @@ var searchField = document.getElementById( "searchInput" );
 const utils = require( './utils/camera' );
 var addressResult = document.getElementById( "searchresults" );
 var searchresultscontainer = document.getElementById('searchresultscontainer');
-var startTime = new Date( Date.now() - 28800000 );
-var endTime = new Date( Date.now() );
 var addressData = null;
 
 var viewer;
 
+/** 
+ * Calls functions used for initialization 
+ */
 function init() {
 
     $('#loadingicon').hide();
@@ -32,6 +33,9 @@ function init() {
  
 }
 
+/** 
+ * Adds event listeners for user interactions
+ */
 function addEventListeners() {
 
     searchButton.addEventListener( "click", checkSearch );
@@ -41,6 +45,9 @@ function addEventListeners() {
 
 }
 
+/** 
+ * Initializes Cesium viewer
+ */
 function initViewer() {
     
     Cesium.Ion.defaultAccessToken = null;
@@ -64,6 +71,13 @@ function initViewer() {
 
 }
 
+/** 
+ * Loads tileset to viewer, calls functions that initialize camera and enable picking features
+ * 
+ * @param { number } longitude GPS coordinates 
+ * @param { number } latitude GPS coordinates
+ * @param { string } tileseturl url of tileset 
+ */
 function activateTileset( longitude, latitude, tileseturl ) {
 
     viewer.scene.primitives.add( new Cesium.Cesium3DTileset( {
@@ -86,6 +100,7 @@ window.onload = function() {
     clearSearch()
     addCityDistricts();
 
+    /* jquery based daterangepicker function handling changing dates in UI */
     $(function() {
         $('input[name="datetimes"]').daterangepicker({
 
@@ -150,7 +165,9 @@ window.onload = function() {
     } 
 }
 
-/* Loads city district names to select */
+/** 
+ * Loads city district names to select 
+ * */
 function addCityDistricts() {
 
     let select = document.getElementById( "district-select" );
@@ -172,7 +189,9 @@ function addCityDistricts() {
 
 }
 
-/* Function that check if there is only one value in searchresults and moves camera to the location */
+/** 
+ * Checks if there is only one value in searchresults and moves camera to the location
+ */
 function checkSearch() {
 
     if ( addressData.length == 1 ) {
@@ -183,7 +202,9 @@ function checkSearch() {
     }
 }
 
-/* Function that check if there is only one value in searchresults */
+/** 
+ * Clears search result container in UI
+ */
 function clearSearch() {
     
     searchresultscontainer.style.display = 'none';
@@ -192,7 +213,9 @@ function clearSearch() {
 
 }
 
-/* Function that filters search results */
+/**
+ * Function that filters search results 
+ */
 async function filterSearchResults () {
 
     searchresultscontainer.style.display = 'none';
@@ -213,12 +236,16 @@ async function filterSearchResults () {
 
 }
 
-/* Renders autocomplete search result */
+/** 
+ * Renders autocomplete search result 
+ * 
+ * @param { Array<String> } addresses shown to user
+ */
 function renderSearchResult( addresses ) {
 
     let liElemet = "" ;
 
-    for ( let i= 0; i < addresses.length; i++ ) {
+    for ( let i = 0; i < addresses.length; i++ ) {
         
         liElemet += `<dt>${ addresses[ i ] }</dt>`
 
@@ -228,7 +255,11 @@ function renderSearchResult( addresses ) {
 
  }
 
- /* Finds coordinates for street address / search term and moves camera to the found coordinates */
+ /**
+  * Finds coordinates for street address / search term and moves camera to the found coordinates 
+  * 
+  * @param { object } e event object from UI
+  */
  function moveCameraToLocation( e ) {
 
     let lat;

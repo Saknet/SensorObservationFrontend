@@ -1,5 +1,11 @@
 const Plotly = require( 'plotly.js/dist/plotly' )
 
+/** 
+ * Creates title for Sensor Observation Data chart 
+ * 
+ * @param { String } address street address of feature
+ * @return { String } title for the Sensor Observation Data chart
+ */
 function createTitle( address ) {
 
     if ( address ) {
@@ -13,6 +19,12 @@ function createTitle( address ) {
     }      
 }
 
+/** 
+ * Creates Sensor Observation Data chart with Plotly for timeserialized observation result data of the feature
+ * 
+ * @param { Object } observationData timeserialized observation data of feature
+ * @param { String } address street address of feature
+ */
 export function generateObservationChart( observationData, address ) {
 
     let chartTitle = createTitle( address );
@@ -137,6 +149,11 @@ export function generateObservationChart( observationData, address ) {
 
 }
 
+/** 
+ * Creates chart with Plotly for feature information data found in tileset
+ * 
+ * @param { Object } featureData feature information data from tileset
+ */
 export function generateFeatureDataTable( featureData ) {
 
     const values = [
@@ -178,6 +195,9 @@ export function generateFeatureDataTable( featureData ) {
 
 }
 
+/** 
+ * Purges Plotly charts from UI
+ */
 export function purgeAllCharts() {
 
     Plotly.purge( 'obsChart' );

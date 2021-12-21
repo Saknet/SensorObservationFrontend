@@ -1,9 +1,14 @@
 const chartsService = require( '../services/charts' );
 const $ = require( 'jquery');
 
-
-/* Function that generates feature information table  */
-export function generateFeatureInfoTable( featureData, observationData, requestStarted ) {
+/** 
+ * Generates tables containing feature information and if found observation results
+ * 
+ * @param { object } featureData the data of the feature
+ * @param { object } observationData possibile observation data of the feature
+ * @param { number } requestStarted only used for measuring performance
+ */
+export function generateTables( featureData, observationData, requestStarted ) {
 
     console.log('timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
 
@@ -22,6 +27,12 @@ export function generateFeatureInfoTable( featureData, observationData, requestS
 
 }
 
+/** 
+ * Removes attributes that are no value to user
+ * 
+ * @param { object } featureData the data of the feature
+ * @return { Array<String> } kept attribute keys and values
+ */
 export function filterFeatureData( featureData ) {
 
     let keys = [];
@@ -60,6 +71,12 @@ export function filterFeatureData( featureData ) {
     return [ keysToKeep, valuesToKeep ]
 }
 
+/** 
+ * Used to get attributes from experiemental tilesets
+ * 
+ * @param { object } featurethe data of the feature
+ * @return { Array<String> } kept attribute keys and values
+ */
 function getFeatureDataForExperiementalTileset( feature ) {
     let keys = [];
     let values = [];
@@ -120,30 +137,4 @@ function getFeatureDataForExperiementalTileset( feature ) {
 
     return [ keys, values ]
 
-}
-
-/* Function that processes found observation data for faster timeseries generation  */
-function findObservationsForUnit( selectedEntity, timevaluepairs, unit ) {
-
-    for ( let i = 0, len = timevaluepairs.length; i < len; i++ ) {
-
-        let time = new Date()
-        time.setTime( timevaluepairs[ i ].time * 1000 );
-        let total = timevaluepairs[ i ].totalvalue;
-        let average = timevaluepairs[ i ].averagevalue;
-
-        if ( total != null ) {
-
-        selectedEntity.description += '<tr><th> Total ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + total.toFixed( 2 ) + '</td></tr>';
-
-        }  
-
-        if ( average != null ) {
-
-            selectedEntity.description += '<tr><th> Average ' + unit + ' measured at ' + time.toLocaleString() + '</th><td>' + average.toFixed( 2 ) + '</td></tr>';
-
-        }         
-    }
-    
-    return selectedEntity;
 }

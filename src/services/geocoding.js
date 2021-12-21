@@ -1,4 +1,9 @@
-/* Processes address data retrived from geocoding api to be used in autocomplete */
+/** 
+ * Processes the data found with geocoding API. Only results from Helsinki are included and only data useful for app is left in
+ * 
+ * @param { object } data found data
+ * @return { object } processed data
+ */
 export function processAddressData( data ) {
 
     let features = [];
@@ -20,6 +25,9 @@ export function processAddressData( data ) {
 
 }
 
+/** 
+ * Hardcoded Helsinki city district's gps coordinates
+ */
 export const helsinkidistricts = [
         {
             "name": "Alppiharju",

@@ -9,7 +9,15 @@ var startTime = new Date( Date.now() - 28800000 - 1800000 );
 var endTime = new Date( Date.now() );
 var feature = null;
 
-/* Function that updates times needed for retrieving observations data */
+/** 
+ * Updates times needed for retrieving observations data when user changes dates with datepicker.
+ * 30 minutes is always added to start date and also to end date if it is over 30 min before current date.
+ * This is needed for correctness of timeseries as observations are serialized for every one hour. If user has
+ * feature picked when they change dates, fetchObservationData is called.
+ * 
+ * @param { date } start the start date
+ * @param { date } end the end date
+ */
 export function updateTimesForObservations( start, end ) {
 
     startTime = new Date( start.getTime() - 1800000 );
@@ -31,7 +39,11 @@ export function updateTimesForObservations( start, end ) {
     }
 }
 
-/* Function that activates feature picker */
+/** 
+ * Activates feature picker TODO: this is too long, refactor it..
+ * 
+ * @param { object } viewer Cesium viewer 
+ */
 export function active3DTilePicker( viewer ) {
 
     let highlighted = {
@@ -130,12 +142,15 @@ export function active3DTilePicker( viewer ) {
     
 }
 
+/** 
+ * Sends user selected time period and parameters found in feature to backend to feach observation data matching the search criteria
+ */
 async function fetchObservationData() {
 
-    let gmlid = null;
-    let ratu = null;
-    let latitude = null;
-    let longitude = null;
+    let gmlid;
+    let ratu;
+    let latitude;
+    let longitude;
 
     const attributes = feature.getProperty( 'attributes' )
 
@@ -187,7 +202,9 @@ async function fetchObservationData() {
         );          
 }
 
-/* Function that resets feature and calls chartservice to purge all charts*/
+/** 
+ * Resets feature and calls chartservice to purge all charts
+ */
 function removeCharts() {
 
     chartsService.purgeAllCharts();
