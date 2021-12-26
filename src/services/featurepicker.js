@@ -190,7 +190,7 @@ async function fetchObservationData() {
     $("#loadingicon").toggle();
 
     observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
-        observationData => featureInformationService.generateFeatureInfoTable( savedFeature, observationData[ 'observations' ], requestStarted ) ).catch( 
+        observationData => featureInformationService.generateTables( savedFeature, observationData[ 'observations' ], requestStarted ) ).catch( 
             ( e ) => {
 
                 console.log( 'something went wrong', e );

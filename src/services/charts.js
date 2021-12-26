@@ -30,108 +30,11 @@ export function generateObservationChart( observationData, address ) {
     let chartTitle = createTitle( address );
     let plotlyData = [];
 
-    if ( observationData[ 'watt' ] != null ) {
+    for ( let i = 0, len = observationData.length; i < len; i++ ) {
 
-        const wTrace = {
+        addObservationDataToChart( plotlyData, observationData[ i ], observationData[ i ].uom );      
 
-            x: observationData[ 'watt' ].observationtimes,
-            y: observationData[ 'watt' ].averages,
-            type: 'scatter',
-            name: 'watts'
-
-        }; 
-
-        plotlyData.push( wTrace );        
-
-    }
-
-    if ( observationData[ 'joule' ] != null ) {
-
-        const jTrace = {
-            x: observationData[ 'joule' ].observationtimes,
-            y: observationData[ 'joule' ].averages,
-            type: 'scatter',
-            name: 'joules'
-        }; 
-
-        plotlyData.push( jTrace );        
-
-    }
-
-    if ( observationData[ 'volt' ] != null ) {
-
-        const vTrace = {
-
-            x: observationData[ 'volt' ].observationtimes,
-            y: observationData[ 'volt' ].averages,
-            type: 'scatter',
-            name: 'volts'
-
-        };
-
-        plotlyData.push( vTrace ); 
-
-    }
-
-    if ( observationData[ 'ampère' ] != null ) {
-
-        const aTrace = {
-
-            x: observationData[ 'ampère' ].observationtimes,
-            y: observationData[ 'ampère' ].averages,
-            type: 'scatter',
-            name: 'ampères'
-
-        };
-
-        plotlyData.push( aTrace ); 
-
-    }    
-
-    if ( observationData[ 'bel sound pressure' ] != null ) {
-
-        const decibelTrace = {
-
-            x: observationData[ 'bel sound pressure' ].observationtimes,
-            y: observationData[ 'bel sound pressure' ].averages,
-            type: 'scatter',
-            name: 'decibels'
-
-        };
-
-        plotlyData.push( decibelTrace );        
-
-    } 
-
-    if ( observationData[ 'degree Celsius' ] != null ) {
-
-        const degreeCelsiusTrace = {
-
-            x: observationData[ 'degree Celsius' ].observationtimes,
-            y: observationData[ 'degree Celsius' ].averages,
-            type: 'scatter',
-            name: '°C'
-
-        };
-
-        plotlyData.push( degreeCelsiusTrace );  
-
-    } 
-
-    if ( observationData[ 'particulate matter' ] != null ) {
-
-        const pmTrace = {
-
-            x: observationData[ 'particulate matter' ].observationtimes,
-            y: observationData[ 'particulate matter' ].averages,
-            type: 'scatter',
-            name: 'pm in air'
-
-        };
-
-        plotlyData.push( pmTrace );  
-
-    } 
+    }     
 
     const layout = {
 
@@ -192,6 +95,28 @@ export function generateFeatureDataTable( featureData ) {
     }
 
     Plotly.newPlot( 'featureInfo', data, layout );
+
+}
+
+/** 
+ * Adds observation data to Plotly chart
+ * 
+ * @param { Array<Object> } plotlyData data gathered for plotly
+ * @param { Object } data observation data for unit of measurement
+ * @param { string } unit unit measured
+ */
+ export function addObservationDataToChart( plotlyData, data, unit ) {
+
+    const trace = {
+
+        x: data.observationtimes,
+        y: data.averages,
+        type: 'scatter',
+        name: unit + ' average from ' + data.sensorcount + ' sensors'
+
+    };
+
+    plotlyData.push( trace ); 
 
 }
 

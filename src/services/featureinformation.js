@@ -19,7 +19,7 @@ export function generateTables( featureData, observationData, requestStarted ) {
 
     }
 
-    if ( !Array.isArray( observationData ) ) {
+    if ( observationData.length ) {
 
         chartsService.generateObservationChart( observationData, featureData.getProperty( 'attributes' )[ 'Katuosoite' ] );
 
