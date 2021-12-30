@@ -1,7 +1,7 @@
-  
-  /** 
+
+/**
    * Sends post request to backend service to retrive timeserialzied sensor observation results for the feature
-   * 
+   *
    * @param { string } url url backend service
    * @param { date } startDate the start date of observations
    * @param { date } endDate  the end date of observations
@@ -11,25 +11,25 @@
    * @param { number } longitude  GPS coordinates of the feature
    * @return { object } data found
    */
-  export async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
-  
+async function findObservations ( url, startDate, endDate, gmlid, ratu, latitude, longitude ) {
+
     const response = await fetch( url, {
-      
+
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify( 
-            { 
-                start: startDate, 
+        body: JSON.stringify(
+            {
+                start: startDate,
                 end: endDate,
                 gmlid: gmlid,
                 ratu: ratu,
                 latitude: latitude,
                 longitude: longitude
             } )
-      } );
+    } );
 
     if ( !response.ok )  {
 
@@ -39,7 +39,11 @@
     }
 
     const data = await response.json();
-    console.log("data", data);
+    console.log( 'data', data );
     return data;
 
 }
+
+module.exports = {
+    findObservations
+};

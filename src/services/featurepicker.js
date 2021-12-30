@@ -2,35 +2,35 @@ const Cesium = require( 'cesium/Cesium' );
 const observationsController = require( '../controllers/observations' );
 const featureInformationService = require( '../services/featureinformation' );
 const chartsService = require( '../services/charts' );
-const $ = require( 'jquery');
+const $ = require( 'jquery' );
 
 var Pickers_3DTile_Activated = true;
 var startTime = new Date( Date.now() - 28800000 - 1800000 );
 var endTime = new Date( Date.now() );
 var feature = null;
 
-/** 
+/**
  * Updates times needed for retrieving observations data when user changes dates with datepicker.
  * 30 minutes is always added to start date and also to end date if it is over 30 min before current date.
  * This is needed for correctness of timeseries as observations are serialized for every one hour. If user has
  * feature picked when they change dates, fetchObservationData is called.
- * 
+ *
  * @param { date } start the start date
  * @param { date } end the end date
  */
-export function updateTimesForObservations( start, end ) {
+function updateTimesForObservations ( start, end ) {
 
     startTime = new Date( start.getTime() - 1800000 );
 
     if ( end.getTime() + 1800000 < new Date( Date.now() ).getTime() ) {
-       
+
         endTime = new Date( end.getTime() + 1800000 );
 
     } else {
 
         endTime = new Date( Date.now() );
 
-    } 
+    }
 
     if ( feature ) {
 
@@ -39,12 +39,12 @@ export function updateTimesForObservations( start, end ) {
     }
 }
 
-/** 
+/**
  * Activates feature picker TODO: this is too long, refactor it..
- * 
- * @param { object } viewer Cesium viewer 
+ *
+ * @param { object } viewer Cesium viewer
  */
-export function active3DTilePicker( viewer ) {
+function active3DTilePicker ( viewer ) {
 
     let highlighted = {
 
@@ -63,7 +63,7 @@ export function active3DTilePicker( viewer ) {
     // Get default left click handler for when a feature is not picked on left click
     let clickHandler = viewer.screenSpaceEventHandler.getInputAction( Cesium.ScreenSpaceEventType.LEFT_CLICK );
     // Color a feature green on hover.
-    viewer.screenSpaceEventHandler.setInputAction( function onMouseMove( movement ) {
+    viewer.screenSpaceEventHandler.setInputAction( function onMouseMove ( movement ) {
 
         if ( Pickers_3DTile_Activated ) {
             // If a feature was previously highlighted, undo the highlight
@@ -89,7 +89,7 @@ export function active3DTilePicker( viewer ) {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE );
 
     // Color a feature on selection and show metadata in the InfoBox.
-    viewer.screenSpaceEventHandler.setInputAction( function onLeftClick( movement ) {
+    viewer.screenSpaceEventHandler.setInputAction( function onLeftClick ( movement ) {
 
 
         if ( Pickers_3DTile_Activated ) {
@@ -117,7 +117,7 @@ export function active3DTilePicker( viewer ) {
 
             selected.feature = feature;
             // Save the selected feature's original color
-            if (feature === highlighted.feature) {
+            if ( feature === highlighted.feature ) {
 
                 Cesium.Color.clone( highlighted.originalColor, selected.originalColor );
                 highlighted.feature = undefined;
@@ -133,28 +133,28 @@ export function active3DTilePicker( viewer ) {
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK );
 
-    viewer.screenSpaceEventHandler.setInputAction( function onRightClick() {
+    viewer.screenSpaceEventHandler.setInputAction( function onRightClick () {
 
         // Clear charts
         removeCharts();
 
-    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK); 
-    
+    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK );
+
 }
 
-/** 
+/**
  * Sends user selected time period and parameters found in feature to backend to feach observation data matching the search criteria
  */
-async function fetchObservationData() {
+async function fetchObservationData () {
 
     let gmlid;
     let ratu;
     let latitude;
     let longitude;
 
-    const attributes = feature.getProperty( 'attributes' )
+    const attributes = feature.getProperty( 'attributes' );
 
-     gmlid = feature.getProperty( 'id' );
+    gmlid = feature.getProperty( 'id' );
 
     if ( attributes ) {
 
@@ -162,11 +162,11 @@ async function fetchObservationData() {
         latitude = attributes[ 'latitude' ];
         longitude = attributes[ 'longitude' ];
         ratu =  attributes[ 'Rakennustunnus_(RATU)' ];
-    
+
         if ( !ratu ) {
-    
+
             ratu = attributes[ 'ratu' ];
-    
+
         }
 
     } else {
@@ -175,11 +175,11 @@ async function fetchObservationData() {
         latitude = feature.getProperty( 'latitude' ) ;
         longitude = feature.getProperty( 'longitude' );
         ratu =  feature.getProperty( 'Rakennustunnus_(RATU)' );
-    
+
         if ( !ratu ) {
-    
+
             ratu = feature.getProperty( 'ratu' );
-    
+
         }
 
     }
@@ -187,27 +187,32 @@ async function fetchObservationData() {
     const requestStarted = new Date( Date.now() );
     let savedFeature = feature;
 
-    $("#loadingicon").toggle();
+    $( '#loadingicon' ).toggle();
 
-    observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then( 
-        observationData => featureInformationService.generateTables( savedFeature, observationData[ 'observations' ], requestStarted ) ).catch( 
-            ( e ) => {
+    observationsController.findObservations( 'http://localhost:3000/observationdata/observations/', startTime, endTime, gmlid, ratu, latitude, longitude ).then(
+        observationData => featureInformationService.generateTables( savedFeature, observationData[ 'observations' ], requestStarted ) ).catch(
+        ( e ) => {
 
-                console.log( 'something went wrong', e );
-                console.log( 'timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
-                const filteredData = featureInformationService.filterFeatureData( feature );
-                chartsService.generateFeatureDataTable( filteredData );
+            console.log( 'something went wrong', e );
+            console.log( 'timespent ', new Date( Date.now() ) - requestStarted, ' ms' );
+            const filteredData = featureInformationService.filterFeatureData( feature );
+            chartsService.generateFeatureDataTable( filteredData );
 
-            } 
-        );          
+        }
+    );
 }
 
-/** 
+/**
  * Resets feature and calls chartservice to purge all charts
  */
-function removeCharts() {
+function removeCharts () {
 
     chartsService.purgeAllCharts();
     feature = null;
 
 }
+
+module.exports = {
+    updateTimesForObservations,
+    active3DTilePicker
+};

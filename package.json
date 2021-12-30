@@ -7,7 +7,8 @@
     "build": "node_modules/.bin/webpack --config webpack.config.js",
     "start": "node_modules/.bin/webpack serve --config webpack.config.js --open",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "cesium": "^1.83.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^5.2.7",
+    "eslint": "^8.5.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^27.3.1",
     "style-loader": "^3.1.0",

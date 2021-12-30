@@ -1,11 +1,11 @@
 
-/** 
+/**
  * Sends get request to digitransit autocomplete geocoding API
- * 
+ *
  * @param { string } text search term
  * @return { object } data found
  */
-export async function digitransitAutocompleteApi( text ) {
+async function digitransitAutocompleteApi ( text ) {
 
     const url = 'https://api.digitransit.fi/geocoding/v1/autocomplete?text=' + text;
 
@@ -23,3 +23,7 @@ export async function digitransitAutocompleteApi( text ) {
     return data;
 
 }
+
+module.exports = {
+    digitransitAutocompleteApi
+};
