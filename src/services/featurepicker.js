@@ -128,7 +128,8 @@ function active3DTilePicker ( viewer ) {
 
             }
 
-            fetchObservationData( viewer );
+            const llcoordinates = toDegrees( viewer.scene.pickPosition( movement.position ) );
+            fetchObservationData( llcoordinates );
 
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK );
@@ -144,8 +145,10 @@ function active3DTilePicker ( viewer ) {
 
 /**
  * Sends user selected time period and parameters found in feature to backend to feach observation data matching the search criteria
+ * 
+ * @param { Array<Number> } llcoordinates feature's gps coordinates
  */
-async function fetchObservationData () {
+async function fetchObservationData ( llcoordinates ) {
 
     let gmlid;
     let ratu;
@@ -159,8 +162,8 @@ async function fetchObservationData () {
     if ( attributes ) {
 
         gmlid = feature.getProperty( 'id' );
-        latitude = attributes[ 'latitude' ];
-        longitude = attributes[ 'longitude' ];
+        latitude = llcoordinates[ 0 ];
+        longitude = llcoordinates[ 1 ];
         ratu =  attributes[ 'Rakennustunnus_(RATU)' ];
 
         if ( !ratu ) {
@@ -211,6 +214,18 @@ function removeCharts () {
     feature = null;
 
 }
+
+/**
+ * Coverts feature's cartesian position to gps coordinates
+ * 
+ * @param { Object } cartesian3Pos feature's cartesian3Pos
+ */
+ function toDegrees( cartesian3Pos ) {
+
+    let pos = Cesium.Cartographic.fromCartesian( cartesian3Pos );
+    return [ pos.latitude / Math.PI * 180, pos.longitude / Math.PI * 180 ];
+
+  }
 
 module.exports = {
     updateTimesForObservations,
