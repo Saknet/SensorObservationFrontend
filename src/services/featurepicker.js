@@ -18,13 +18,6 @@ thingsSwitch.addEventListener( 'change', function() {
 
         displayThings = true;
 
-        if ( feature && feature.latitude && feature.longitude ) {
-            console.log(feature.latitude);
-            console.log(feature.longitude);
-
-            thingService.displayThingsWithinFeature( feature.longitude, feature.latitude );
-        }
-
     } else {
 
         displayThings = false;
@@ -253,8 +246,6 @@ function removeCharts () {
  function toDegrees( cartesian3Pos ) {
 
     let pos = Cesium.Cartographic.fromCartesian( cartesian3Pos );
-    feature.latitude = pos.latitude / Math.PI * 180;
-    feature.longitude = pos.longitude / Math.PI * 180;
     return [ pos.latitude / Math.PI * 180, pos.longitude / Math.PI * 180 ];
 
   }

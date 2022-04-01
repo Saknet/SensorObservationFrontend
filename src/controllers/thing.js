@@ -12,8 +12,6 @@ async function getThingsFromPyGeoAPI ( bbox ) {
 
     const response = await fetch( url );
 
-    console.log( "url", url );
-
     if ( !response.ok )  {
 
         let message = `An error has occured: ${ response.status }`;
