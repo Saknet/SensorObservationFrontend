@@ -127,12 +127,60 @@ function purgeAllCharts () {
 
     Plotly.purge( 'obsChart' );
     Plotly.purge( 'featureInfo' );
+    Plotly.purge( 'things' );
+
+}
+
+/**
+ * Creates chart with Plotly for thing information found from api
+ *
+ * @param { Object } thingData thing information data from api
+ */
+ function generateThingTable ( thingData ) {
+
+    const values = [
+        thingData[ 0 ],
+        thingData[ 1 ],
+        thingData[ 2 ]
+    ];
+
+    const data = [ {
+        type: 'table',
+        header: {
+            values: [['<b>Name</b>'], ['<b>Location</b>'], ['<b>Project</b>']],
+            align: 'center',
+            line: { width: 1, color: 'black' },
+            fill: { color: 'green' },
+            font: { family: 'Arial', size: 10, color: 'white' }
+        },
+        cells: {
+            values: values,
+            align: ['left', 'center'],
+            line: { color: 'black', width: 1 },
+            font: { family: 'Arial', size: 9, color: ['black'] }
+        }
+    }];
+
+    const layout = {
+
+        title: 'Things',
+        font: {
+            size: 10
+        },
+        margin: {
+            b: 20,
+            t: 40
+        }
+    };
+
+    Plotly.newPlot( 'things', data, layout );
 
 }
 
 module.exports = {
     generateObservationChart,
     generateFeatureDataTable,
+    generateThingTable,
     addObservationDataToChart,
     purgeAllCharts
 };

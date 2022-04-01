@@ -2,12 +2,36 @@ const Cesium = require( 'cesium/Cesium' );
 const observationsController = require( '../controllers/observations' );
 const featureInformationService = require( '../services/featureinformation' );
 const chartsService = require( '../services/charts' );
+const thingService = require( '../services/thing' );
 const $ = require( 'jquery' );
+const thingsSwitch = document.getElementById( 'thingsSwitchCheck' );
 
 var Pickers_3DTile_Activated = true;
 var startTime = new Date( Date.now() - 28800000 - 1800000 );
 var endTime = new Date( Date.now() );
 var feature = null;
+var displayThings = false;
+
+thingsSwitch.addEventListener( 'change', function() {
+
+    if ( this.checked ) {
+
+        displayThings = true;
+
+        if ( feature && feature.latitude && feature.longitude ) {
+            console.log(feature.latitude);
+            console.log(feature.longitude);
+
+            thingService.displayThingsWithinFeature( feature.longitude, feature.latitude );
+        }
+
+    } else {
+
+        displayThings = false;
+
+    }
+
+});
 
 /**
  * Updates times needed for retrieving observations data when user changes dates with datepicker.
@@ -187,6 +211,12 @@ async function fetchObservationData ( llcoordinates ) {
 
     }
 
+    if ( displayThings ) {
+
+        thingService.displayThingsWithinFeature( longitude, latitude );
+
+    }    
+
     const requestStarted = new Date( Date.now() );
     let savedFeature = feature;
 
@@ -223,6 +253,8 @@ function removeCharts () {
  function toDegrees( cartesian3Pos ) {
 
     let pos = Cesium.Cartographic.fromCartesian( cartesian3Pos );
+    feature.latitude = pos.latitude / Math.PI * 180;
+    feature.longitude = pos.longitude / Math.PI * 180;
     return [ pos.latitude / Math.PI * 180, pos.longitude / Math.PI * 180 ];
 
   }

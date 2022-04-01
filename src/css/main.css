@@ -28,3 +28,10 @@ html, body, #cesiumContainer {
 	right: 0;
 	background-color: #ffffff;
 }
+
+.plotly {
+	display: flex;
+  }
+  .plotly.charts {  
+	justify-content: space-between;
+  }
