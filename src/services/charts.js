@@ -132,6 +132,15 @@ function purgeAllCharts () {
 }
 
 /**
+ * Purges Plotly things from UI
+ */
+ function purgeThings () {
+
+    Plotly.purge( 'things' );
+
+}
+
+/**
  * Creates chart with Plotly for thing information found from api
  *
  * @param { Object } thingData thing information data from api
@@ -182,5 +191,6 @@ module.exports = {
     generateFeatureDataTable,
     generateThingTable,
     addObservationDataToChart,
-    purgeAllCharts
+    purgeAllCharts,
+    purgeThings
 };

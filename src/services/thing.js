@@ -10,10 +10,10 @@ const chartsService = require( '../services/charts' );
  */
  function createBoundingBoxForCoordinates ( longitude, latitude ) {
 
-    const latmax = ( latitude + 0.0004 ).toString();
-    const latmin = ( latitude  - 0.0004 ).toString();
-    const longmax = ( longitude + 0.0004 ).toString();
-    const longmin = ( longitude  - 0.0004) .toString(); 
+    const latmax = ( latitude + 0.0005 ).toString();
+    const latmin = ( latitude  - 0.0005 ).toString();
+    const longmax = ( longitude + 0.0005 ).toString();
+    const longmin = ( longitude  - 0.0005) .toString(); 
     const bbox = longmin + ',' + latmin + ',' + longmax + ',' + latmax;
 
     return bbox;
@@ -31,14 +31,14 @@ const chartsService = require( '../services/charts' );
 
     const bbox = createBoundingBoxForCoordinates( longitude, latitude  );
     const thingsFromAPI = await thingController.getThingsFromPyGeoAPI( bbox );
-
-    if ( thingsFromAPI.length ) {
+    
+    if ( thingsFromAPI.features.length ) {
 
         const processedThings = processThingData( thingsFromAPI );
         chartsService.generateThingTable( processedThings );
 
     }
-
+    
 }
 
 /**

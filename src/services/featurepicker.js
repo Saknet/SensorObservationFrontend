@@ -18,9 +18,16 @@ thingsSwitch.addEventListener( 'change', function() {
 
         displayThings = true;
 
+        if ( feature && feature.latitude && feature.longitude ) {
+
+            thingService.displayThingsWithinFeature( feature.longitude, feature.latitude );
+
+        }
+
     } else {
 
         displayThings = false;
+        chartsService.purgeThings();
 
     }
 
@@ -146,6 +153,8 @@ function active3DTilePicker ( viewer ) {
             }
 
             const llcoordinates = toDegrees( viewer.scene.pickPosition( movement.position ) );
+            feature.latitude = llcoordinates[ 0 ];
+            feature.longitude = llcoordinates[ 1 ];
             fetchObservationData( llcoordinates );
 
         }
