@@ -6,9 +6,9 @@ const Cesium = require( 'cesium/Cesium' );
 const featurePickerService = require( './services/featurepicker' );
 const geocodingApi = require( './controllers/geocoding' );
 const geocodingService = require( './services/geocoding' );
+const districtService = require( './services/district' );
 const searchButton = document.getElementById( 'searchButton' );
 const clearButton = document.getElementById( 'clearButton' );
-const citydistricts = geocodingService.helsinkidistricts;
 const $ = require( 'jquery' );
 const moment = require( 'moment' );
 const daterangepicker = require( 'daterangepicker' );
@@ -98,7 +98,7 @@ window.onload = function () {
 
     init();
     clearSearch();
-    addCityDistricts();
+    districtService.initializeDistricts( Cesium, viewer );
 
     /* jquery based daterangepicker function handling changing dates in UI */
     $( function () {
@@ -133,61 +133,8 @@ window.onload = function () {
         } );
 
     } );
-
-    let tilesetselect = document.getElementById( 'tileset-list' );
-    let districtselect = document.getElementById( 'district-select' );
-
-
-    districtselect.onchange = function () {
-
-        for ( let i = 0; i < citydistricts.length; i++ ) {
-
-            if ( citydistricts[ i ].name === districtselect.value ) {
-
-                utils.moveCameraTo( Cesium, viewer, citydistricts[ i ].longitude, citydistricts[ i ].latitude );
-                break;
-
-            }
-        }
-    };
-
-    /* Handles change of tilesets  */
-    tilesetselect.onchange = function () {
-
-        var tileseturl = 'https://geo.fvh.fi/tilesets/simpletest/tileset.json';
-
-        if ( tilesetselect.value === 'helsinki' ) {
-            tileseturl = 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json';
-        }
-
-        activateTileset( 24.983, 60.1845, tileseturl );
-
-    };
+    
 };
-
-/**
- * Loads city district names to select
- * */
-function addCityDistricts () {
-
-    let select = document.getElementById( 'district-select' );
-
-    for ( let i = 0; i < citydistricts.length; i++ ) {
-
-        let citydistrict = citydistricts[ i ][ 'name' ];
-        let el = document.createElement( 'option' );
-        el.textContent = citydistrict;
-        el.value = citydistrict;
-        select.appendChild( el );
-
-        if ( citydistrict === 'Sörnäinen' ) {
-
-            select.options.selectedIndex = i;
-
-        }
-    }
-
-}
 
 /**
  * Checks if there is only one value in searchresults and moves camera to the location

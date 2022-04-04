@@ -1,4 +1,4 @@
-const chartsService = require( '../services/charts' );
+const chartsService = require( './chart' );
 const $ = require( 'jquery' );
 
 /**

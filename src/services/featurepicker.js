@@ -1,7 +1,7 @@
 const Cesium = require( 'cesium/Cesium' );
-const observationsController = require( '../controllers/observations' );
+const observationsController = require( '../controllers/observation' );
 const featureInformationService = require( '../services/featureinformation' );
-const chartsService = require( '../services/charts' );
+const chartsService = require( './chart' );
 const thingService = require( '../services/thing' );
 const $ = require( 'jquery' );
 const thingsSwitch = document.getElementById( 'thingsSwitchCheck' );

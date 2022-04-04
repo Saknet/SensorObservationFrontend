@@ -1,5 +1,5 @@
 const thingController = require( '../controllers/thing' );
-const chartsService = require( '../services/charts' );
+const chartsService = require( './chart' );
 
 /**
  * Create bounding box for GPS coordinates of the feature
