@@ -1,6 +1,5 @@
 const utils = require( '../utils/camera' );
 const districtselect = document.getElementById( 'district-select' );
-const Cesium = require( 'cesium/Cesium' );
 
 /**
  * Initialize service
