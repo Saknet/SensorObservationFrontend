@@ -5,7 +5,7 @@ const utils = require( '../utils/camera' );
 /**
  * Initializes Cesium 
  */
- function initCesium () {
+ function initializeCesium () {
 
     let viewer = createViewr ();
     activateTileset( 24.976, 60.1845, 'https://kartta.hel.fi/3d/datasource-data/e9cfc1bb-a015-4a73-b741-7535504c61bb/tileset.json', viewer );
@@ -65,5 +65,5 @@ function activateTileset ( longitude, latitude, tileseturl, viewer ) {
 }
 
 module.exports = {
-    initCesium
+    initializeCesium
 };

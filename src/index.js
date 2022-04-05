@@ -12,7 +12,7 @@ const datepickerService = require( './services/datepicker' );
  */
 function init () {
 
-    let viewer = cesiumviewerService.initCesium();
+    let viewer = cesiumviewerService.initializeCesium();
     datepickerService.initializeDatepicker();
     districtService.initializeDistricts( viewer );
     geocodingService.initializeGeocoding( viewer );
