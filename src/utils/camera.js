@@ -1,5 +1,7 @@
+const Cesium = require( 'cesium/Cesium' );
+
 // Public function for initializing the viewport
-function initializeViewPort ( Cesium, viewer, longitude, latitude ) {
+function initializeViewPort ( viewer, longitude, latitude ) {
     // Starting location, centered around Helsinki, in WGS84 degrees
     var west = 24.86;
     var south = 60.14;
@@ -10,7 +12,7 @@ function initializeViewPort ( Cesium, viewer, longitude, latitude ) {
     Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
     Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
 
-    moveCameraTo( Cesium, viewer, longitude, latitude );
+    moveCameraTo( viewer, longitude, latitude );
 
     // Further shadow configuration
     viewer.shadowMap.enabled = true;
@@ -24,7 +26,7 @@ function initializeViewPort ( Cesium, viewer, longitude, latitude ) {
 }
 
 // Moves camera to specified latitude, longitude coordinates
-function moveCameraTo ( Cesium, viewer, longitude, latitude ) {
+function moveCameraTo ( viewer, longitude, latitude ) {
 
     viewer.camera.setView( {
         destination: Cesium.Cartesian3.fromDegrees( longitude, latitude - 0.0065, 500.0 ),
@@ -38,7 +40,7 @@ function moveCameraTo ( Cesium, viewer, longitude, latitude ) {
 }
 
 // This creates a box of six trim planes. However, at the moment it cannot take into account the differences in 3D-tiles coordinate systems.
-function constructTrimBox ( tileset, minX, maxX, minY, maxY, minZ, maxZ, union, width, Cesium ) {
+function constructTrimBox ( tileset, minX, maxX, minY, maxY, minZ, maxZ, union, width ) {
 
     var planeVectorTop = new Cesium.Cartesian3( 0.0, -1.0, 0.0 );
     var planeVectorBottom = new Cesium.Cartesian3( 0.0, 1.0, 0.0 );

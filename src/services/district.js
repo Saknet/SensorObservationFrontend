@@ -1,14 +1,25 @@
 const utils = require( '../utils/camera' );
 const districtselect = document.getElementById( 'district-select' );
+const Cesium = require( 'cesium/Cesium' );
 
-function initializeDistricts( Cesium, viewer ) {
+/**
+ * Initialize service
+ * 
+ * @param { object } viewer Cesium viewer
+ * */
+function initializeDistricts( viewer ) {
 
     addCityDistricts();
-    activateSelect( Cesium, viewer );
+    activateSelect( viewer );
 
 }
 
-function activateSelect( Cesium, viewer ) {
+/**
+ * Activates city district select
+ * 
+ * @param { object } viewer Cesium viewer
+ * */
+function activateSelect( viewer ) {
 
     districtselect.onchange = function () {
 
@@ -16,7 +27,7 @@ function activateSelect( Cesium, viewer ) {
 
             if ( helsinkidistricts[ i ].name === districtselect.value ) {
 
-                utils.moveCameraTo( Cesium, viewer, helsinkidistricts[ i ].longitude, helsinkidistricts[ i ].latitude );
+                utils.moveCameraTo( viewer, helsinkidistricts[ i ].longitude, helsinkidistricts[ i ].latitude );
                 break;
 
             }
@@ -26,7 +37,7 @@ function activateSelect( Cesium, viewer ) {
 /**
  * Loads city district names to select
  * */
-function addCityDistricts ( Cesium, viewer ) {
+function addCityDistricts () {
 
     for ( let i = 0; i < helsinkidistricts.length; i++ ) {
 
