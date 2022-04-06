@@ -1,4 +1,4 @@
-const thingController = require( '../controllers/thing' );
+const apiController = require( '../controllers/api' );
 const chartsService = require( './chart' );
 
 /**
@@ -30,7 +30,7 @@ const chartsService = require( './chart' );
  async function displayThingsWithinFeature ( longitude, latitude ) {
 
     const bbox = createBoundingBoxForCoordinates( longitude, latitude  );
-    const thingsFromAPI = await thingController.getThingsFromPyGeoAPI( bbox );
+    const thingsFromAPI = await apiController.getDataFromAPI( 'https://geo.fvh.fi/features/collections/thing/items?f=json&bbox=' + bbox );
     
     if ( thingsFromAPI.features.length ) {
 

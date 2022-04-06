@@ -3,7 +3,7 @@ const searchresultscontainer = document.getElementById( 'searchresultscontainer'
 const searchField = document.getElementById( 'searchInput' );
 const searchButton = document.getElementById( 'searchButton' );
 const clearButton = document.getElementById( 'clearButton' );
-const geocodingApi = require( '../controllers/geocoding' );
+const apiController = require( '../controllers/api' );
 const utils = require( '../utils/camera' );
 let viewer;
 let addressData = null;
@@ -94,7 +94,7 @@ async function filterSearchResults () {
 
     if ( searchField.value.length > 2 ) {
 
-        let data = await geocodingApi.digitransitAutocompleteApi( searchField.value );
+        let data = await apiController.getDataFromAPI( 'https://api.digitransit.fi/geocoding/v1/autocomplete?text=' + searchField.value );
 
         if ( data ) {
 
